@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+<title>منصّة الباحث التفاعلية — go2top</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lav:#78658D; --lav-d:#4E4173; --lav-l:#A796BE; --lav-tint:#EDE7F1;
+  --sage:#7D8167; --sage-d:#61654E; --sage-tint:#E9ECDF;
+  --camel:#C7A16B; --terra:#B16D4C; --terra-tint:#F1E1D8;
+  --gold:#C8991A; --gold-d:#8a6a1a; --gold-tint:#F4E9D6;
+  --cream:#F3EEE6; --paper:#FBF8F2; --charcoal:#302D2A;
+  --muted:#726B62; --line:#DED5C6;
+  --serif:'Sakkal Majalla','Cairo','Tajawal',serif;
+  --sans:'Sakkal Majalla','Tajawal','Cairo',sans-serif;
+  --sh:0 6px 20px rgba(48,45,42,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--cream);color:var(--charcoal);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:14px}
+::-webkit-scrollbar{height:9px;width:9px}
+::-webkit-scrollbar-thumb{background:var(--lav-l);border-radius:8px}
+
+/* ===== HEADER ===== */
+header.top{background:linear-gradient(120% 100% at 90% 0%, #EFE9F0, #F3EEE6 65%);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.tbar{max-width:1280px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .t{font-family:var(--serif);font-weight:800;font-size:24px;color:var(--lav-d);letter-spacing:-1px}
+.logo .t .two{color:var(--sage)}
+.logo .sub{font-size:11px;color:var(--muted);border-right:2px solid var(--line);padding-right:9px;line-height:1.3}
+.thesis-name{flex:1;min-width:180px}
+.thesis-name input{width:100%;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:700;color:var(--lav-d);font-size:15px}
+.hdr-actions{display:flex;gap:8px}
+.btn{border-radius:10px;padding:8px 14px;font-weight:700;font-size:13px;transition:.15s;border:1px solid transparent;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px)}
+.btn.pri{background:var(--lav-d);color:#fff}
+.btn.gh{background:#fff;border-color:var(--line);color:var(--lav-d)}
+.btn.sage{background:var(--sage);color:#fff}
+.btn.terra{background:var(--terra);color:#fff}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:8px}
+
+/* ===== NAV ===== */
+nav.tabs{max-width:1280px;margin:0 auto;padding:0 12px;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav.tabs button{white-space:nowrap;padding:12px 15px;font-weight:700;font-size:14px;color:var(--muted);border-bottom:3px solid transparent;transition:.15s}
+nav.tabs button .ic{margin-left:5px}
+nav.tabs button.on{color:var(--lav-d);border-bottom-color:var(--lav-d)}
+nav.tabs button:hover{color:var(--charcoal)}
+
+/* ===== LAYOUT ===== */
+main{max-width:1280px;margin:0 auto;padding:22px 18px 80px}
+.view{display:none;animation:fade .25s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2.vt{font-family:var(--serif);font-size:26px;color:var(--lav-d);font-weight:800;margin-bottom:4px}
+.vlead{color:var(--muted);margin-bottom:20px;font-size:15px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--sh)}
+.grid{display:grid;gap:16px}
+.eyebrow{display:inline-block;background:var(--lav-d);color:#fff;font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:6px;margin-bottom:12px}
+
+/* ===== DASHBOARD ===== */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.kpi .lab{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.kpi .val{font-family:var(--serif);font-size:30px;font-weight:800;color:var(--lav-d);line-height:1}
+.kpi .val small{font-size:15px;color:var(--muted)}
+.kpi::after{content:"";position:absolute;left:0;bottom:0;height:4px;width:100%;background:var(--sage)}
+.kpi.k2::after{background:var(--terra)} .kpi.k3::after{background:var(--gold)} .kpi.k4::after{background:var(--lav)}
+.ring-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.big-ring{flex-shrink:0}
+.dash-cols{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:820px){.dash-cols{grid-template-columns:1fr}}
+
+/* progress bar */
+.pbar{height:9px;border-radius:6px;background:var(--sage-tint);overflow:hidden}
+.pbar>span{display:block;height:100%;background:linear-gradient(90deg,var(--sage),var(--lav));border-radius:6px;transition:width .4s}
+
+/* ===== TREE / MINDMAP ===== */
+.tree-toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.node{border-radius:12px;margin-bottom:6px}
+.node-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid var(--line);border-radius:12px;background:#fff;transition:.12s}
+.node-row:hover{box-shadow:0 4px 12px rgba(78,65,115,.08)}
+.node-children{margin-right:22px;border-right:2px dashed var(--line);padding-right:10px;margin-top:6px}
+.twist{width:20px;height:20px;flex-shrink:0;display:grid;place-items:center;border-radius:6px;color:var(--muted);font-size:12px;transition:.15s}
+.twist:hover{background:var(--sage-tint)}
+.twist.collapsed{transform:rotate(90deg)}
+.twist.leaf{visibility:hidden}
+.badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.node-title{flex:1;font-weight:600;font-size:14.5px;min-width:60px;cursor:text}
+.node-pbar{width:120px;flex-shrink:0}
+.node-pct{font-size:12px;font-weight:700;color:var(--sage-d);width:38px;text-align:left;flex-shrink:0}
+.node-acts{display:flex;gap:3px;flex-shrink:0}
+.iconbtn{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--muted);font-size:14px}
+.iconbtn:hover{background:var(--lav-tint);color:var(--lav-d)}
+.status-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ===== NEURAL ===== */
+.neural-wrap{position:relative;background:radial-gradient(120% 120% at 50% 0%,#F7F3F8,#F3EEE6);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+#neuralSvg{width:100%;height:600px;display:block;cursor:grab;touch-action:none}
+#neuralSvg.drag{cursor:grabbing}
+.neu-ctrl{position:absolute;top:12px;left:12px;display:flex;gap:6px;flex-direction:column;z-index:5}
+.neu-ctrl button{width:34px;height:34px;background:#fff;border:1px solid var(--line);border-radius:9px;font-weight:800;color:var(--lav-d);box-shadow:var(--sh);font-size:15px}
+.neu-legend{position:absolute;bottom:12px;right:12px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:11.5px;display:flex;gap:12px;flex-wrap:wrap}
+.neu-legend span{display:inline-flex;align-items:center;gap:5px}
+.neu-legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+
+/* ===== TIMER ===== */
+.timer-stage{text-align:center;padding:14px}
+.timer-clock{font-family:var(--serif);font-size:clamp(56px,16vw,110px);font-weight:800;color:var(--lav-d);line-height:1;letter-spacing:2px;font-variant-numeric:tabular-nums}
+.timer-mode{font-size:15px;font-weight:700;color:var(--terra);margin-bottom:8px;letter-spacing:1px}
+.timer-ring{display:block;margin:0 auto 6px}
+.timer-btns{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.timer-cfg{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.timer-cfg label{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px;text-align:center}
+.timer-cfg input,.timer-cfg select{width:100px;padding:7px;border:1px solid var(--line);border-radius:9px;text-align:center}
+.session-dots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.session-dots i{width:12px;height:12px;border-radius:50%;background:var(--sage-tint);border:1px solid var(--line)}
+.session-dots i.done{background:var(--gold)}
+
+/* ===== FORMS ===== */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--charcoal);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.7}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.frow{grid-template-columns:1fr}}
+.result-box{background:var(--sage-tint);border:1px solid var(--sage);border-radius:12px;padding:14px;margin-top:12px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.stat-cell{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.stat-cell .n{font-family:var(--serif);font-size:22px;font-weight:800;color:var(--lav-d)}
+.stat-cell .l{font-size:11.5px;color:var(--muted)}
+
+/* stat sub-tabs */
+.subtabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.subtabs button{padding:8px 14px;border-radius:20px;font-weight:700;font-size:13px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+.subtabs button.on{background:var(--lav-tint);color:var(--lav-d);border-color:var(--lav-l)}
+
+/* ===== REFERENCES ===== */
+.ref-layout{display:grid;grid-template-columns:1fr 1.4fr;gap:16px}
+@media(max-width:900px){.ref-layout{grid-template-columns:1fr}}
+.ref-card{background:#fff;border:1px solid var(--line);border-left:4px solid var(--terra);border-radius:12px;padding:14px;margin-bottom:12px}
+.ref-card .quote{background:var(--gold-tint);border-radius:8px;padding:10px;font-size:14px;margin:8px 0;position:relative;line-height:1.8}
+.ref-card .meta{font-size:12.5px;color:var(--muted)}
+.ref-card .cite{font-size:12.5px;color:var(--lav-d);background:var(--lav-tint);padding:7px 10px;border-radius:8px;margin-top:8px;font-family:var(--serif)}
+.ref-card .rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ref-card h4{font-size:15px;color:var(--charcoal)}
+
+/* ===== TASKS ===== */
+.task-row{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:8px;transition:.12s}
+.task-row:hover{box-shadow:0 4px 12px rgba(78,65,115,.08)}
+.task-check{width:22px;height:22px;border-radius:7px;border:2px solid var(--sage);flex-shrink:0;display:grid;place-items:center;cursor:pointer;font-size:13px;color:#fff;background:#fff}
+.task-check.done{background:var(--sage);border-color:var(--sage)}
+.task-main{flex:1;min-width:80px}
+.task-main .tt{font-weight:700;font-size:14.5px}
+.task-main .tt.done{text-decoration:line-through;color:var(--muted)}
+.task-main .tm{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.prio{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap}
+.prio-عالية{background:var(--terra-tint);color:var(--terra)}
+.prio-متوسطة{background:var(--gold-tint);color:var(--gold-d)}
+.prio-منخفضة{background:var(--sage-tint);color:var(--sage-d)}
+.overdue{color:var(--terra);font-weight:700}
+
+.cal-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.cal-title{font-family:var(--serif);font-size:20px;font-weight:800;color:var(--lav-d);flex:1;text-align:center;min-width:140px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{font-size:12px;font-weight:700;color:var(--muted);text-align:center;padding:6px 0}
+.cal-cell{min-height:82px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px;position:relative;overflow:hidden}
+.cal-cell.other{background:var(--paper);opacity:.5}
+.cal-cell.today{border-color:var(--lav);box-shadow:0 0 0 2px var(--lav-tint)}
+.cal-cell .dn{font-size:12px;font-weight:700;color:var(--charcoal);margin-bottom:3px}
+.cal-cell.today .dn{color:var(--lav-d)}
+.cal-task{font-size:10.5px;padding:2px 6px;border-radius:5px;margin-bottom:3px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;line-height:1.5}
+@media(max-width:640px){.cal-cell{min-height:58px}.cal-task{font-size:9px}.cal-cell .dn{font-size:11px}}
+
+.tl-row{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;margin-bottom:8px}
+.tl-label{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-track{position:relative;height:26px;background:var(--paper);border-radius:8px;border:1px solid var(--line);overflow:hidden}
+.tl-bar{position:absolute;top:3px;height:20px;border-radius:6px;display:flex;align-items:center;padding:0 6px;font-size:10.5px;color:#fff;font-weight:700;cursor:pointer;overflow:hidden}
+.tl-months{display:grid;grid-template-columns:150px 1fr;gap:10px;margin-bottom:8px}
+.tl-scale{position:relative;height:20px;font-size:11px;color:var(--muted)}
+.tl-tick{position:absolute;top:0;border-right:1px solid var(--line);padding-right:3px;white-space:nowrap}
+.tl-today{position:absolute;top:0;bottom:0;width:2px;background:var(--terra);z-index:3}
+@media(max-width:640px){.tl-row,.tl-months{grid-template-columns:90px 1fr}.tl-label{font-size:11px}}
+
+/* ===== LIBRARY ===== */
+.shelf{margin-bottom:22px}
+.shelf-title{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-size:17px;font-weight:800;color:var(--lav-d);border-bottom:2px solid var(--line);padding-bottom:6px;margin-bottom:12px}
+.shelf-title .cnt{font-size:12px;color:var(--muted);font-weight:normal}
+.books{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.book{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;transition:.15s;position:relative;border-top:4px solid var(--lav)}
+.book:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(78,65,115,.12)}
+.book.t-img{border-top-color:var(--sage)} .book.t-pdf{border-top-color:var(--terra)} .book.t-doc{border-top-color:var(--lav-d)} .book.t-other{border-top-color:var(--camel)}
+.book .ico{font-size:30px;text-align:center;margin-bottom:8px}
+.book .thumb{width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px;background:var(--paper)}
+.book .bt{font-size:13px;font-weight:700;line-height:1.4;word-break:break-word;max-height:3.2em;overflow:hidden}
+.book .bm{font-size:11px;color:var(--muted);margin-top:4px}
+.book .bx{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.9);display:grid;place-items:center;color:var(--terra);opacity:0;transition:.15s}
+.book:hover .bx{opacity:1}
+.lib-tag{display:inline-block;background:var(--lav-tint);color:var(--lav-d);border-radius:10px;padding:1px 7px;font-size:10px;margin:2px 2px 0}
+
+/* writing */
+.streak-num{font-family:var(--serif);font-size:40px;font-weight:800;color:var(--gold-d);line-height:1}
+.phrase-cat{font-weight:700;color:var(--sage-d);font-size:13px;margin:12px 0 6px}
+.phrase{display:inline-block;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:5px 12px;margin:3px;font-size:13px;cursor:pointer;transition:.12s}
+.phrase:hover{background:var(--lav-tint);border-color:var(--lav-l)}
+@media(max-width:760px){#writingCols{grid-template-columns:1fr!important}}
+
+/* supervisor */
+.sup-card{background:#fff;border:1px solid var(--line);border-left:4px solid var(--lav);border-radius:12px;padding:14px;margin-bottom:12px}
+.sup-card h4{font-size:15px;color:var(--lav-d);display:flex;justify-content:space-between;gap:8px}
+.sup-card .sl{font-size:12.5px;color:var(--muted);margin-top:6px}
+.sup-card .sl b{color:var(--charcoal)}
+
+/* ai */
+.ai-msg{border-radius:12px;padding:14px;line-height:1.9;font-size:14.5px;white-space:pre-wrap;background:var(--sage-tint);border:1px solid var(--sage);margin-top:10px}
+.ai-msg.err{background:var(--terra-tint);border-color:var(--terra);color:var(--terra)}
+.ai-typing{color:var(--muted);font-size:13px}
+
+/* ===== MODAL ===== */
+.modal-bg{position:fixed;inset:0;background:rgba(48,45,42,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:18px}
+.modal-bg.on{display:flex}
+.modal{background:var(--paper);border-radius:18px;max-width:460px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto}
+.modal h3{font-family:var(--serif);color:var(--lav-d);font-size:20px;margin-bottom:14px}
+.modal-acts{display:flex;gap:10px;justify-content:flex-start;margin-top:16px}
+
+/* toast */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--charcoal);color:#fff;padding:12px 22px;border-radius:30px;font-weight:700;font-size:13.5px;z-index:200;transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty .em{font-size:40px;margin-bottom:10px}
+.hint{font-size:12.5px;color:var(--muted);background:var(--lav-tint);border-radius:10px;padding:10px 12px;margin-bottom:14px;line-height:1.7}
+.tag-lav{background:var(--lav-tint);color:var(--lav-d)}
+.chip{display:inline-block;background:var(--sage-tint);color:var(--sage-d);border-radius:20px;padding:2px 10px;font-size:11.5px;font-weight:700}
+
+#printArea{display:none}
+.pcover{text-align:center;padding-top:26vh;page-break-after:always}
+.pcover .pmount{font-size:44px;color:#78658D;line-height:1}
+.pcover .ptitle{font-family:var(--serif);font-size:30pt;font-weight:800;color:#4E4173;margin:14pt 0 6pt}
+.pcover .psub{font-size:14pt;color:#7D8167}
+.pcover .pbrand{font-size:12pt;color:#78658D;margin-top:30vh}
+#printArea .phead{font-family:var(--serif);color:#4E4173;font-size:20pt;border-bottom:2px solid #DED5C6;padding-bottom:6pt;margin:0 0 12pt}
+#printArea h2{font-family:var(--serif);font-size:16pt;margin:14pt 0 4pt}
+#printArea h3{font-size:14pt;margin:10pt 0 3pt}
+#printArea h4{font-size:13pt;margin:8pt 0 2pt}
+#printArea h5,#printArea h6{font-size:12pt;margin:6pt 0 2pt}
+#printArea .pn{font-size:11.5pt;color:#302D2A;margin:2pt 0 4pt;text-indent:0.8cm;line-height:1.7}
+#printArea .pref{font-size:11.5pt;margin:0 0 4pt;padding-right:0.8cm;text-indent:-0.8cm}
+#printArea .ptbl{width:100%;border-collapse:collapse;font-size:11pt;margin-top:6pt}
+#printArea .ptbl th{background:#E9ECDF;color:#61654E;padding:5pt;border:1px solid #DED5C6;text-align:right}
+#printArea .ptbl td{padding:5pt;border:1px solid #DED5C6}
+@media print{
+  header.top,nav.tabs,main,.modal-bg,.toast{display:none!important}
+  #printArea{display:block!important;color:#302D2A;direction:rtl}
+  body{background:#fff}
+  @page{size:A4;margin:2cm}
+  #printArea h2,#printArea h3,#printArea h4,#printArea h5,#printArea h6{page-break-after:avoid}
+  #printArea .ptbl tr{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="tbar">
+    <div class="logo">
+      <svg width="40" height="32" viewBox="0 0 46 36" fill="none" aria-label="go2top">
+        <path d="M2 32L16 12l9 20H2z" fill="#78658D" opacity=".85"/>
+        <path d="M25 32L33 16l11 16H25z" fill="#B16D4C" opacity=".6"/>
+        <path d="M2 32L14 8l7 12 5-9 8 14 8-5" stroke="#4E4173" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="t">go<span class="two">2</span>top</div>
+      </div>
+      <div class="sub">منصّة<br>الباحث</div>
+    </div>
+    <div class="thesis-name">
+      <input id="thesisTitle" type="text" placeholder="✍️ عنوان رسالتك العلمية…" autocomplete="off">
+    </div>
+    <div class="hdr-actions">
+      <button class="btn sage sm" data-act="export-word">📄 تصدير Word</button>
+      <button class="btn gh sm" data-act="export">⬇️ نسخة احتياطية</button>
+      <button class="btn gh sm" data-act="import">⬆️ استيراد</button>
+      <button class="btn gh sm" data-act="print">🖨️ طباعة</button>
+      <input id="fileInput" type="file" accept=".json,application/json,text/plain,text/json" style="display:none">
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-view="dash" class="on"><span class="ic">📊</span>لوحة القيادة</button>
+    <button data-view="tree"><span class="ic">🌳</span>الخريطة الذهنية</button>
+    <button data-view="neural"><span class="ic">🧠</span>الشبكة العصبية</button>
+    <button data-view="tasks"><span class="ic">🗓️</span>المهام والجدول</button>
+    <button data-view="timer"><span class="ic">⏱️</span>المؤقت</button>
+    <button data-view="stats"><span class="ic">📈</span>الإحصاء</button>
+    <button data-view="refs"><span class="ic">📚</span>المراجع</button>
+    <button data-view="library"><span class="ic">🗄️</span>المكتبة</button>
+    <button data-view="supervisor"><span class="ic">🧑‍🏫</span>المشرف</button>
+    <button data-view="writing"><span class="ic">✍️</span>الكتابة</button>
+    <button data-view="ai"><span class="ic">🤖</span>مساعد ذكي</button>
+  </nav>
+</header>
+
+<main>
+  <!-- DASHBOARD -->
+  <section class="view on" id="view-dash">
+    <h2 class="vt">لوحة القيادة</h2>
+    <p class="vlead">نبض رسالتك في نظرة واحدة — التقدّم يُحسب تلقائيًا من كل مسألة صعودًا إلى الأبواب.</p>
+    <div class="kpis" id="kpis"></div>
+    <div class="dash-cols">
+      <div class="card">
+        <div class="eyebrow">التقدّم العام</div>
+        <div class="ring-wrap">
+          <div class="big-ring" id="bigRing"></div>
+          <div style="flex:1;min-width:200px" id="dashBreakdown"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="eyebrow" style="background:var(--sage-d)">تركيزك اليوم</div>
+        <div id="focusSummary"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TREE / MINDMAP -->
+  <section class="view" id="view-tree">
+    <h2 class="vt">الخريطة الذهنية المتدرّجة</h2>
+    <p class="vlead">شئ داخل شئ: باب ← فصل ← مبحث ← مطلب ← مسألة، بلا حدود للتعمّق. حرّك، أضِف، وقِس تقدّم كل عنصر.</p>
+    <div class="hint">💡 أشرطة التقدّم للعناصر التي تحتها فروع تُحسب تلقائيًا كمتوسّط فروعها. أما العنصر النهائي (بلا فروع) فتضبط تقدّمه يدويًا من زر ✏️.</div>
+    <div class="tree-toolbar">
+      <button class="btn pri sm" data-act="add-root">➕ إضافة باب / قسم رئيسي</button>
+      <button class="btn gh sm" data-act="expand-all">توسيع الكل</button>
+      <button class="btn gh sm" data-act="collapse-all">طيّ الكل</button>
+      <button class="btn gh sm" data-act="seed">تحميل مثال توضيحي</button>
+    </div>
+    <div id="treeRoot"></div>
+  </section>
+
+  <!-- NEURAL -->
+  <section class="view" id="view-neural">
+    <h2 class="vt">الشبكة العصبية للفصول</h2>
+    <p class="vlead">رؤية بصرية لبنية بحثك كشبكة مترابطة — حجم العقدة ولونها يعكسان مستواها وتقدّمها. اسحب للتحريك، وانقر عقدة لفتحها.</p>
+    <div class="neural-wrap">
+      <div class="neu-ctrl">
+        <button data-act="zoom-in">＋</button>
+        <button data-act="zoom-out">－</button>
+        <button data-act="zoom-fit">⤢</button>
+      </div>
+      <svg id="neuralSvg"></svg>
+      <div class="neu-legend" id="neuLegend"></div>
+    </div>
+  </section>
+
+  <!-- TASKS -->
+  <section class="view" id="view-tasks">
+    <h2 class="vt">المهام والجدول الزمني</h2>
+    <p class="vlead">خطّط مهام رسالتك وواعيدها، وتابعها في قائمة أو تقويم شهري أو خط زمني (Gantt) — واربط كل مهمة بعنصر من خريطتك.</p>
+    <div class="tree-toolbar">
+      <button class="btn pri sm" data-act="add-task">➕ مهمة جديدة</button>
+      <button class="btn sage sm" data-act="export-ics">📆 تصدير للتقويم (تذكيرات)</button>
+      <button class="btn gh sm" data-act="seed-tasks">تحميل مهام نموذجية</button>
+    </div>
+    <div class="hint" id="overdueBar" style="display:none"></div>
+    <div class="subtabs" id="taskSubtabs">
+      <button data-ttab="list" class="on">📋 قائمة</button>
+      <button data-ttab="cal">🗓️ تقويم شهري</button>
+      <button data-ttab="tl">📊 خط زمني</button>
+    </div>
+    <div class="ttab" id="ttab-list"></div>
+    <div class="ttab" id="ttab-cal" style="display:none">
+      <div class="cal-head">
+        <button class="btn gh sm" data-act="cal-prev">‹ السابق</button>
+        <div class="cal-title" id="calTitle"></div>
+        <button class="btn gh sm" data-act="cal-next">التالي ›</button>
+        <button class="btn gh sm" data-act="cal-today">اليوم</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="ttab" id="ttab-tl" style="display:none">
+      <div class="card" id="tlCard"></div>
+    </div>
+  </section>
+
+  <!-- TIMER -->
+  <section class="view" id="view-timer">
+    <h2 class="vt">المؤقت الاحترافي</h2>
+    <p class="vlead">تقنية بومودورو: ركّز في نوبات، واسترح بينها. اربط الجلسة بعنصر من خريطتك لتسجيل وقت تركيزك عليه.</p>
+    <div class="card">
+      <div class="timer-stage">
+        <div class="timer-mode" id="timerMode">جاهز للتركيز</div>
+        <svg class="timer-ring" id="timerRing" width="220" height="220"></svg>
+        <div class="session-dots" id="sessionDots"></div>
+        <div class="timer-btns">
+          <button class="btn pri" data-act="timer-start">▶️ ابدأ</button>
+          <button class="btn gh" data-act="timer-pause">⏸️ إيقاف مؤقت</button>
+          <button class="btn gh" data-act="timer-reset">🔄 تصفير</button>
+          <button class="btn terra" data-act="timer-skip">⏭️ تخطّي</button>
+        </div>
+        <div class="timer-cfg">
+          <label>تركيز (دقيقة)<input id="cfgWork" type="number" min="1" max="180" value="25"></label>
+          <label>راحة قصيرة<input id="cfgShort" type="number" min="1" max="60" value="5"></label>
+          <label>راحة طويلة<input id="cfgLong" type="number" min="1" max="60" value="15"></label>
+          <label>العنصر المرتبط<select id="cfgNode"><option value="">— عام —</option></select></label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="view" id="view-stats">
+    <h2 class="vt">الدراسات الإحصائية وضبطها</h2>
+    <p class="vlead">أدوات جاهزة لتحليل بياناتك والتحقق من جودة أدواتك دون برامج خارجية.</p>
+    <div class="subtabs" id="statSubtabs">
+      <button data-stab="desc" class="on">📊 الإحصاء الوصفي</button>
+      <button data-stab="alpha">🎯 ثبات كرونباخ ألفا</button>
+      <button data-stab="sample">👥 حجم العينة</button>
+      <button data-stab="freq">🔢 جدول التكرارات</button>
+      <button data-stab="ttest">🆚 اختبار t</button>
+      <button data-stab="corr">🔗 الارتباط</button>
+      <button data-stab="chi">🎲 مربع كاي</button>
+    </div>
+
+    <div class="card stab" id="stab-desc">
+      <div class="hint">الصق قيمك الرقمية (مفصولة بمسافة أو فاصلة أو أسطر). مثال: نتائج استبانة، درجات، أعمار…</div>
+      <div class="field"><label>البيانات الرقمية</label><textarea id="descData" placeholder="12, 15, 18, 20, 22, 19, 17, 21"></textarea></div>
+      <button class="btn pri sm" data-act="calc-desc">احسب</button>
+      <div id="descOut"></div>
+    </div>
+
+    <div class="card stab" id="stab-alpha" style="display:none">
+      <div class="hint">لقياس ثبات (اتساق) أداتك: الصق مصفوفة — كل <b>سطر = مستجيب</b>، والقيم في السطر = درجاته على <b>فقرات</b> المقياس (مفصولة بمسافة/فاصلة). يجب أن تتساوى الفقرات في كل سطر.</div>
+      <div class="field"><label>مصفوفة الاستجابات</label><textarea id="alphaData" placeholder="4 5 3 4&#10;3 4 4 5&#10;5 5 4 4&#10;2 3 3 2"></textarea></div>
+      <button class="btn pri sm" data-act="calc-alpha">احسب ألفا</button>
+      <div id="alphaOut"></div>
+    </div>
+
+    <div class="card stab" id="stab-sample" style="display:none">
+      <div class="hint">حاسبة حجم العينة (معادلة كوكران) لمجتمع معلوم أو غير محدود.</div>
+      <div class="frow">
+        <div class="field"><label>حجم المجتمع N (اتركه فارغًا إن كان كبيرًا/غير محدود)</label><input id="smpN" type="number" placeholder="مثال: 5000"></div>
+        <div class="field"><label>مستوى الثقة</label><select id="smpConf"><option value="1.645">90%</option><option value="1.96" selected>95%</option><option value="2.576">99%</option></select></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>هامش الخطأ e (%)</label><input id="smpE" type="number" value="5" min="1" max="20"></div>
+        <div class="field"><label>نسبة التوزّع p</label><input id="smpP" type="number" value="0.5" min="0.01" max="0.99" step="0.05"></div>
+      </div>
+      <button class="btn pri sm" data-act="calc-sample">احسب حجم العينة</button>
+      <div id="sampleOut"></div>
+    </div>
+
+    <div class="card stab" id="stab-freq" style="display:none">
+      <div class="hint">الصق إجابات فئوية (كل إجابة في سطر أو مفصولة بفاصلة) لحساب التكرارات والنسب. مثال: ذكر، أنثى، ذكر…</div>
+      <div class="field"><label>البيانات الفئوية</label><textarea id="freqData" placeholder="موافق&#10;محايد&#10;موافق&#10;غير موافق&#10;موافق"></textarea></div>
+      <button class="btn pri sm" data-act="calc-freq">احسب التكرارات</button>
+      <div id="freqOut"></div>
+    </div>
+
+    <div class="card stab" id="stab-ttest" style="display:none">
+      <div class="hint">اختبار t لعيّنتين مستقلتين: قارن متوسّطي مجموعتين. الصق أرقام كل مجموعة في حقلها.</div>
+      <div class="frow">
+        <div class="field"><label>المجموعة الأولى</label><textarea id="ttA" placeholder="85 78 92 88 76"></textarea></div>
+        <div class="field"><label>المجموعة الثانية</label><textarea id="ttB" placeholder="72 68 75 70 65"></textarea></div>
+      </div>
+      <button class="btn pri sm" data-act="calc-ttest">احسب t</button>
+      <div id="ttestOut"></div>
+    </div>
+
+    <div class="card stab" id="stab-corr" style="display:none">
+      <div class="hint">معامل ارتباط بيرسون بين متغيّرين. الصق أزواج القيم بنفس العدد والترتيب (متغيّر X ومتغيّر Y).</div>
+      <div class="frow">
+        <div class="field"><label>المتغيّر X</label><textarea id="corrX" placeholder="10 12 14 16 18"></textarea></div>
+        <div class="field"><label>المتغيّر Y</label><textarea id="corrY" placeholder="20 25 28 33 40"></textarea></div>
+      </div>
+      <button class="btn pri sm" data-act="calc-corr">احسب r</button>
+      <div id="corrOut"></div>
+    </div>
+
+    <div class="card stab" id="stab-chi" style="display:none">
+      <div class="hint">اختبار مربع كاي للاستقلالية. الصق جدول التقاطع: كل سطر صف، والقيم مفصولة بمسافة/فاصلة (أعمدة). مثال سطرين ×عمودين.</div>
+      <div class="field"><label>جدول التكرارات المشاهَدة</label><textarea id="chiData" placeholder="30 20&#10;15 35"></textarea></div>
+      <button class="btn pri sm" data-act="calc-chi">احسب مربع كاي</button>
+      <div id="chiOut"></div>
+    </div>
+  </section>
+
+  <!-- REFERENCES -->
+  <section class="view" id="view-refs">
+    <h2 class="vt">قصّاصة المراجع والاقتباسات</h2>
+    <p class="vlead">انسخ الجزء المهم من مصدرك، ألصقه، أضِف بيانات الكتاب والصفحة — فيولّد لك استشهادًا جاهزًا للنسخ ويحفظه مربوطًا بفصلك.</p>
+    <div class="ref-layout">
+      <div class="card">
+        <div class="eyebrow">مرجع / اقتباس جديد</div>
+        <div class="field"><label>✂️ الاقتباس / الجزء المهم</label><textarea id="rfQuote" placeholder="ألصق هنا النص المقتبس من المصدر…"></textarea></div>
+        <div class="frow">
+          <div class="field"><label>المؤلف</label><input id="rfAuthor" placeholder="اسم المؤلف"></div>
+          <div class="field"><label>سنة النشر</label><input id="rfYear" placeholder="2024"></div>
+        </div>
+        <div class="field"><label>عنوان الكتاب / المصدر</label><input id="rfTitle" placeholder="عنوان الكتاب أو المقال"></div>
+        <div class="frow">
+          <div class="field"><label>الناشر / المجلة</label><input id="rfPub" placeholder="دار النشر أو المجلة"></div>
+          <div class="field"><label>الصفحة / الصفحات</label><input id="rfPage" placeholder="ص 45"></div>
+        </div>
+        <div class="frow">
+          <div class="field"><label>مرتبط بعنصر</label><select id="rfNode"><option value="">— غير مرتبط —</option></select></div>
+          <div class="field"><label>نمط التوثيق</label><select id="rfStyle"><option value="apa">APA</option><option value="chicago">شيكاغو</option><option value="arabic">عربي تقليدي</option></select></div>
+        </div>
+        <div class="frow">
+          <div class="field"><label>الحالة</label><select id="rfStatus"><option>لم يُقرأ</option><option>قيد القراءة</option><option>قُرئ</option><option>مقتبس منه</option></select></div>
+          <div class="field"><label>التقييم</label><select id="rfRating"><option value="0">—</option><option value="1">⭐</option><option value="2">⭐⭐</option><option value="3">⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="5">⭐⭐⭐⭐⭐</option></select></div>
+        </div>
+        <div class="field"><label>وسوم (افصلها بفاصلة)</label><input id="rfTags" placeholder="التحول الرقمي، القيادة"></div>
+        <button class="btn pri" data-act="ref-save">💾 حفظ المرجع</button>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">
+          <div class="eyebrow" style="background:var(--sage-d)">استيراد وتصدير</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn gh sm" data-act="ref-import">⬆️ استيراد BibTeX / RIS</button>
+            <button class="btn gh sm" data-act="ref-export-bib">⬇️ تصدير قائمة المراجع (Word)</button>
+          </div>
+          <input id="refFile" type="file" accept=".bib,.ris,.txt,text/plain" style="display:none">
+          <div class="hint" style="margin:10px 0 0">صدّري مراجعك من Google Scholar (زر «Cite ← BibTeX») أو Zotero/Mendeley كملف ‎.bib أو ‎.ris وارفعيه هنا لإضافتها دفعة واحدة.</div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap">
+          <input id="refSearch" placeholder="🔍 ابحث في المراجع والوسوم…" style="flex:1;min-width:140px;padding:9px 12px;border:1px solid var(--line);border-radius:10px">
+          <select id="refFilter" style="padding:9px;border:1px solid var(--line);border-radius:10px"><option value="">كل الحالات</option><option>لم يُقرأ</option><option>قيد القراءة</option><option>قُرئ</option><option>مقتبس منه</option></select>
+          <span class="chip" id="refCount">0 مرجع</span>
+        </div>
+        <div id="refList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section class="view" id="view-library">
+    <h2 class="vt">مكتبة البحث</h2>
+    <p class="vlead">رفّ كتبك الرقمي: ارفع ملفات ومراجع وصور بحثك (PDF، صور، Word…)، صنّفها في رفوف، وافتحها من داخل الأداة متى شئت.</p>
+    <div class="tree-toolbar">
+      <button class="btn pri sm" data-act="lib-add">➕ إضافة ملف/صورة للمكتبة</button>
+      <button class="btn gh sm" data-act="lib-newshelf">🗂️ رفّ جديد (تصنيف)</button>
+      <input id="libFile" type="file" multiple style="display:none">
+    </div>
+    <div class="hint">💡 الملفات تُحفظ في متصفح هذا الجهاز (بسعة كبيرة عبر قاعدة بيانات المتصفح)، وتبقى متاحة بلا إنترنت. لنقلها لجهاز آخر أعِد رفعها هناك.</div>
+    <div style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap">
+      <input id="libSearch" placeholder="🔍 ابحث في المكتبة…" style="flex:1;min-width:140px;padding:9px 12px;border:1px solid var(--line);border-radius:10px">
+      <select id="libShelf" style="padding:9px;border:1px solid var(--line);border-radius:10px"><option value="">كل الرفوف</option></select>
+    </div>
+    <div id="libGrid"></div>
+  </section>
+
+  <!-- SUPERVISOR -->
+  <section class="view" id="view-supervisor">
+    <h2 class="vt">سجل المشرف</h2>
+    <p class="vlead">وثّق كل اجتماع مع مشرفك وملاحظاته وقراراته، وحوّلها إلى مهام بمواعيد حتى لا تضيع ولا تتكرّر الأخطاء.</p>
+    <div class="tree-toolbar"><button class="btn pri sm" data-act="sup-add">➕ لقاء / متابعة جديدة</button></div>
+    <div id="supList"></div>
+  </section>
+
+  <!-- WRITING -->
+  <section class="view" id="view-writing">
+    <h2 class="vt">ورشة الكتابة</h2>
+    <p class="vlead">اكسر حاجز الصفحة البيضاء: هدف كلمات يومي بسلسلة إنجاز محفّزة، وبنك عبارات أكاديمية جاهزة تنسخها بنقرة.</p>
+    <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px" id="writingCols">
+      <div class="card">
+        <div class="eyebrow">هدف الكتابة اليومي</div>
+        <div id="wGoalBox"></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow" style="background:var(--sage-d)">بنك العبارات الأكاديمية</div>
+        <div id="phraseBox"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI ASSISTANT -->
+  <section class="view" id="view-ai">
+    <h2 class="vt">المساعد الذكي (Claude)</h2>
+    <p class="vlead">مساعد بحثي يعمل بمفتاح Claude الخاص بك: يلخّص مصدرًا، يقترح صياغة، ينقد سؤال بحثك، أو يحلّل فجوة الأدبيات.</p>
+    <div class="card" id="aiSetup">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div class="eyebrow" style="background:var(--terra);margin-bottom:0">حسابي الشخصي في المساعد</div>
+        <span class="chip" id="aiStatusChip">غير مسجّل الدخول</span>
+      </div>
+      <div class="hint" style="margin:12px 0">🔒 هذا حسابك الخاص: مفتاحك واسمك يُحفظان في <b>متصفح هذا الجهاز فقط</b>، ولا يراهما أي مستخدم آخر ولا يدخلان النسخة الاحتياطية. كل باحث يدخل حسابه ويستخدم رصيده هو.</div>
+      <div class="frow">
+        <div class="field"><label>اسمك (اختياري)</label><input id="aiName" placeholder="اسم الباحث" autocomplete="off"></div>
+        <div class="field"><label>النموذج</label><select id="aiModel"><option value="claude-3-5-haiku-latest">Claude Haiku (أسرع/أرخص)</option><option value="claude-sonnet-4-20250514">Claude Sonnet (أدق)</option></select></div>
+      </div>
+      <div class="field"><label>مفتاح Claude API الخاص بك (يبدأ بـ sk-ant-)</label><input id="aiKey" type="password" placeholder="sk-ant-..." autocomplete="off"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn pri" data-act="ai-save-key">🔑 تسجيل الدخول / حفظ</button>
+        <button class="btn gh sm" data-act="ai-logout" id="aiLogoutBtn" style="display:none">🚪 خروج (إزالة الحساب)</button>
+        <button class="btn gh sm" data-act="ai-help">❓ كيف أحصل على مفتاحي؟</button>
+      </div>
+      <div id="aiHelp" class="hint" style="display:none;margin-top:12px;line-height:1.9">
+        خطوات الحصول على مفتاحك الشخصي (مرة واحدة):<br>
+        1. ادخلي <b>console.anthropic.com</b> وسجّلي حسابك.<br>
+        2. من القائمة اختاري <b>API Keys ← Create Key</b>.<br>
+        3. انسخي المفتاح (يبدأ بـ sk-ant-) والصقيه أعلاه.<br>
+        4. لتشغيل المساعد يلزم رصيد في <b>Billing</b> (الاستخدام مدفوع على حسابك، وهو زهيد للأسئلة القصيرة).
+      </div>
+    </div>
+    <div class="card" id="aiChat" style="margin-top:16px;display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <div style="font-weight:700;color:var(--lav-d)" id="aiWelcome"></div>
+        <label style="font-size:12.5px;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="aiCtx"> أرفق سياق رسالتي تلقائيًا</label>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="btn gh sm" data-act="ai-preset" data-p="critique">نقد سؤال البحث</button>
+        <button class="btn gh sm" data-act="ai-preset" data-p="summarize">تلخيص مصدر</button>
+        <button class="btn gh sm" data-act="ai-preset" data-p="gap">تحليل فجوة الأدبيات</button>
+        <button class="btn gh sm" data-act="ai-preset" data-p="rephrase">تحسين صياغة فقرة</button>
+        <button class="btn gh sm" data-act="ai-preset" data-p="outline">اقتراح هيكل فصل</button>
+        <button class="btn gh sm" data-act="ai-preset" data-p="next">ما خطوتي التالية؟</button>
+        <button class="btn sage sm" data-act="ai-cite">📖 اقترح استشهادًا من مكتبتي</button>
+      </div>
+      <div class="field"><textarea id="aiInput" placeholder="اكتبي سؤالك أو ألصقي النص هنا…" style="min-height:110px"></textarea></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn pri" data-act="ai-send">✨ اسأل Claude</button>
+        <button class="btn gh sm" data-act="ai-clear">مسح</button>
+        <span id="aiStatus" style="font-size:12.5px;color:var(--muted)"></span>
+      </div>
+      <div id="aiOut" style="margin-top:14px"></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modalBox"></div></div>
+<div class="toast" id="toast"></div>
+<div id="printArea"></div>
+
+<script>
+"use strict";
+(function(){
+/* ============ STATE ============ */
+const KEY='go2top_researcher_v2';
+const LADDER=['الرسالة','باب','فصل','مبحث','مطلب','مسألة','فرع'];
+const LADDER_COLORS={'الرسالة':'#4E4173','باب':'#78658D','فصل':'#7D8167','مبحث':'#C7A16B','مطلب':'#B16D4C','مسألة':'#C8991A','فرع':'#A796BE'};
+const STATUS=['لم يبدأ','قيد العمل','مسودة','مكتمل'];
+const STATUS_COLORS={'لم يبدأ':'#A79E92','قيد العمل':'#C8991A','مسودة':'#B16D4C','مكتمل':'#7D8167'};
+const STATUS_PROG={'مكتمل':100};
+
+let state=load();
+
+function blank(){
+  return {
+    thesisTitle:'',
+    nodes:[{id:'root',parentId:null,type:'الرسالة',title:'رسالتي العلمية',status:'قيد العمل',progress:0,note:'',collapsed:false}],
+    refs:[],
+    tasks:[], // {id,title,nodeId,start,due,status,priority}
+    supervisor:[], // {id,date,type,agenda,notes,decisions,todo,next}
+    writing:{goal:400,log:[]}, // log:{date,words}
+    ai:{model:'claude-3-5-haiku-latest'},
+    focusLog:[], // {date, minutes, nodeId}
+    timer:{work:25,short:5,long:15,cycle:0}
+  };
+}
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);if(s&&s.nodes){s.tasks=s.tasks||[];s.refs=s.refs||[];s.focusLog=s.focusLog||[];s.supervisor=s.supervisor||[];s.writing=s.writing||{goal:400,log:[]};s.ai=s.ai||{model:'claude-3-5-haiku-latest'};return s;}}}catch(e){}
+  return blank();
+}
+let saveTimer=null;
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){toast('تعذّر الحفظ التلقائي — استخدم نسخة احتياطية');}
+}
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(save,300);}
+
+/* ============ HELPERS ============ */
+function uid(){return 'n'+Date.now().toString(36)+Math.floor(Math.random()*1e5).toString(36);}
+function byId(id){return state.nodes.find(n=>n.id===id);}
+function children(id){return state.nodes.filter(n=>n.parentId===id);}
+function isLeaf(id){return children(id).length===0;}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// rolled-up progress
+function prog(id){
+  const kids=children(id);
+  if(kids.length===0){
+    const n=byId(id);
+    if(n&&n.status==='مكتمل')return 100;
+    return n?Number(n.progress)||0:0;
+  }
+  let s=0;kids.forEach(k=>s+=prog(k.id));
+  return Math.round(s/kids.length);
+}
+function descendants(id){let out=[];children(id).forEach(k=>{out.push(k);out=out.concat(descendants(k.id));});return out;}
+function nextType(parentType){const i=LADDER.indexOf(parentType);return LADDER[Math.min(i+1,LADDER.length-1)];}
+
+/* ============ TABS ============ */
+const views={dash:renderDash,tree:renderTree,neural:renderNeural,tasks:renderTasks,timer:renderTimer,stats:null,refs:renderRefs,library:renderLibrary,supervisor:renderSupervisor,writing:renderWriting,ai:renderAI};
+document.getElementById('tabs').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-view]');if(!b)return;
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  const v=b.dataset.view;
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  if(views[v])views[v]();
+});
+
+/* ============ TOAST + MODAL ============ */
+let toastT=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200);}
+const modalBg=document.getElementById('modalBg'),modalBox=document.getElementById('modalBox');
+function openModal(html){modalBox.innerHTML=html;modalBg.classList.add('on');}
+function closeModal(){modalBg.classList.remove('on');modalBox.innerHTML='';}
+modalBg.addEventListener('click',e=>{if(e.target===modalBg)closeModal();});
+
+/* ============ DASHBOARD ============ */
+function donutSVG(pct,size,stroke,color){
+  const r=(size-stroke)/2,c=2*Math.PI*r,off=c*(1-pct/100);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#E9ECDF" stroke-width="${stroke}"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
+      stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round"
+      transform="rotate(-90 ${size/2} ${size/2})" style="transition:stroke-dashoffset .6s"/>
+    <text x="50%" y="50%" text-anchor="middle" dy=".35em" font-family="var(--serif)" font-weight="800"
+      font-size="${size*0.22}" fill="#4E4173">${pct}%</text></svg>`;
+}
+function renderDash(){
+  const total=prog('root');
+  const all=descendants('root');
+  const leaves=all.filter(n=>isLeaf(n.id));
+  const done=leaves.filter(n=>prog(n.id)>=100).length;
+  const chapters=all.filter(n=>n.type==='فصل'||n.type==='باب').length;
+  const focusMin=state.focusLog.reduce((a,b)=>a+b.minutes,0);
+  const kpis=[
+    {l:'التقدّم الكلي',v:total+'<small>%</small>',c:''},
+    {l:'العناصر المكتملة',v:done+'<small> / '+leaves.length+'</small>',c:'k2'},
+    {l:'الأبواب والفصول',v:chapters,c:'k3'},
+    {l:'دقائق التركيز',v:focusMin,c:'k4'},
+  ];
+  document.getElementById('kpis').innerHTML=kpis.map(k=>`<div class="kpi ${k.c}"><div class="lab">${k.l}</div><div class="val">${k.v}</div></div>`).join('');
+  document.getElementById('bigRing').innerHTML=donutSVG(total,150,16,'#78658D');
+
+  // breakdown by top-level
+  const tops=children('root');
+  let bd='';
+  if(tops.length===0){bd='<div class="empty"><div class="em">🌱</div>ابدأ ببناء هيكل بحثك من تبويب «الخريطة الذهنية».</div>';}
+  else{
+    bd=tops.map(t=>{const p=prog(t.id);return `<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-bottom:4px">
+        <span><span class="badge" style="background:${LADDER_COLORS[t.type]}22;color:${LADDER_COLORS[t.type]}">${t.type}</span> ${esc(t.title)}</span><span style="color:var(--sage-d)">${p}%</span></div>
+      <div class="pbar"><span style="width:${p}%"></span></div></div>`;}).join('');
+  }
+  document.getElementById('dashBreakdown').innerHTML=bd;
+
+  // focus summary
+  const today=todayStr();
+  const todayMin=state.focusLog.filter(f=>f.date===today).reduce((a,b)=>a+b.minutes,0);
+  const sessions=state.focusLog.length;
+  document.getElementById('focusSummary').innerHTML=`
+    <div class="stat-grid">
+      <div class="stat-cell"><div class="n">${todayMin}</div><div class="l">دقائق اليوم</div></div>
+      <div class="stat-cell"><div class="n">${sessions}</div><div class="l">إجمالي الجلسات</div></div>
+      <div class="stat-cell"><div class="n">${Math.round(focusMin/60*10)/10}</div><div class="l">ساعات كلية</div></div>
+    </div>
+    <div class="hint" style="margin-top:12px;margin-bottom:0">🧘 تذكير: التقدّم البطيء تقدّم. أنجز 1% اليوم لا صفر — الرسالة ماراثون لا سباق سرعة.</div>`;
+}
+
+/* ============ TREE / MINDMAP ============ */
+function statusBadge(n){
+  const isL=isLeaf(n.id);
+  return `<span class="badge" style="background:${STATUS_COLORS[n.status]}22;color:${STATUS_COLORS[n.status]}">${n.status}</span>`;
+}
+function renderNodeHTML(id,depth){
+  const n=byId(id);if(!n)return '';
+  const kids=children(id);
+  const p=prog(id);
+  const collapsed=n.collapsed&&kids.length;
+  const twistCls=kids.length?('twist'+(collapsed?' collapsed':'')):'twist leaf';
+  const color=LADDER_COLORS[n.type]||'#78658D';
+  let html=`<div class="node" data-id="${id}">
+    <div class="node-row">
+      <button class="${twistCls}" data-act="toggle" data-id="${id}">▶</button>
+      <span class="status-dot" style="background:${STATUS_COLORS[n.status]}"></span>
+      <span class="badge" style="background:${color}1e;color:${color}">${n.type}</span>
+      <span class="node-title" data-act="rename" data-id="${id}" title="اضغط لإعادة التسمية">${esc(n.title)||'(بلا عنوان)'}</span>
+      <div class="node-pbar pbar"><span style="width:${p}%"></span></div>
+      <span class="node-pct">${p}%</span>
+      <div class="node-acts">
+        <button class="iconbtn" data-act="addchild" data-id="${id}" title="إضافة عنصر فرعي">➕</button>
+        <button class="iconbtn" data-act="edit" data-id="${id}" title="تفاصيل / تقدّم">✏️</button>
+        ${id!=='root'?`<button class="iconbtn" data-act="del" data-id="${id}" title="حذف">🗑️</button>`:''}
+      </div>
+    </div>`;
+  if(kids.length&&!collapsed){
+    html+=`<div class="node-children">`+kids.map(k=>renderNodeHTML(k.id,depth+1)).join('')+`</div>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+function renderTree(){
+  document.getElementById('treeRoot').innerHTML=renderNodeHTML('root',0);
+}
+
+/* tree + global actions via delegation */
+document.body.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const act=el.dataset.act,id=el.dataset.id;
+  switch(act){
+    case 'toggle':{const n=byId(id);n.collapsed=!n.collapsed;saveSoon();renderTree();break;}
+    case 'addchild':addChild(id);break;
+    case 'add-root':addChild('root');break;
+    case 'rename':inlineRename(id);break;
+    case 'edit':editNode(id);break;
+    case 'del':delNode(id);break;
+    case 'expand-all':state.nodes.forEach(n=>n.collapsed=false);saveSoon();renderTree();break;
+    case 'collapse-all':state.nodes.forEach(n=>{if(n.id!=='root')n.collapsed=true;});saveSoon();renderTree();break;
+    case 'seed':seedExample();break;
+    case 'export':doExport();break;
+    case 'export-word':exportWord();break;
+    case 'import':document.getElementById('fileInput').click();break;
+    case 'print':buildPrintDoc();setTimeout(()=>window.print(),60);break;
+    // tasks
+    case 'add-task':editTask(null);break;
+    case 'edit-task':editTask(id);break;
+    case 'del-task':delTask(id);break;
+    case 'toggle-task':toggleTask(id);break;
+    case 'seed-tasks':seedTasks();break;
+    case 'cal-prev':calShift(-1);break;
+    case 'cal-next':calShift(1);break;
+    case 'cal-today':calToday();break;
+    // timer
+    case 'timer-start':timerStart();break;
+    case 'timer-pause':timerPause();break;
+    case 'timer-reset':timerReset();break;
+    case 'timer-skip':timerSkip();break;
+    // neural
+    case 'zoom-in':neuZoom(1.2);break;
+    case 'zoom-out':neuZoom(1/1.2);break;
+    case 'zoom-fit':neuFit();break;
+    // stats
+    case 'calc-desc':calcDesc();break;
+    case 'calc-alpha':calcAlpha();break;
+    case 'calc-sample':calcSample();break;
+    case 'calc-freq':calcFreq();break;
+    // refs
+    case 'ref-save':saveRef();break;
+    case 'ref-copy':copyRefCite(id);break;
+    case 'ref-del':delRef(id);break;
+    case 'ref-copyquote':copyRefQuote(id);break;
+    case 'ref-import':document.getElementById('refFile').click();break;
+    case 'ref-export-bib':exportBibliography();break;
+    case 'ref-matrix':refMatrix(id);break;
+    // library
+    case 'lib-add':document.getElementById('libFile').click();break;
+    case 'lib-newshelf':newShelf();break;
+    case 'lib-open':libOpen(id);break;
+    case 'lib-del':libDelete(id);break;
+    // tasks calendar
+    case 'export-ics':exportICS();break;
+    case 'task-gcal':taskGCal(id);break;
+    // stats
+    case 'calc-ttest':calcTtest();break;
+    case 'calc-corr':calcCorr();break;
+    case 'calc-chi':calcChi();break;
+    // supervisor
+    case 'sup-add':editSup(null);break;
+    case 'sup-edit':editSup(id);break;
+    case 'sup-del':delSup(id);break;
+    case 'sup-totask':supToTask(id);break;
+    // writing
+    case 'w-setgoal':setWGoal();break;
+    case 'w-logwords':logWords();break;
+    case 'phrase-copy':copyPhrase(el);break;
+    // ai
+    case 'ai-save-key':saveAiKey();break;
+    case 'ai-send':aiSend();break;
+    case 'ai-clear':document.getElementById('aiInput').value='';document.getElementById('aiOut').innerHTML='';break;
+    case 'ai-preset':aiPreset(el.dataset.p);break;
+    case 'ai-copyout':copyText(el.dataset.t,'نُسخ الرد ✅');break;
+    case 'ai-logout':aiLogout();break;
+    case 'ai-help':aiHelp();break;
+    case 'ai-cite':aiCite();break;
+    // modal generic
+    case 'modal-close':closeModal();break;
+  }
+});
+
+function addChild(pid){
+  const parent=byId(pid);
+  const t=nextType(parent.type);
+  const n={id:uid(),parentId:pid,type:t,title:'',status:'لم يبدأ',progress:0,note:'',collapsed:false};
+  state.nodes.push(n);
+  parent.collapsed=false;
+  saveSoon();renderTree();
+  // focus rename immediately
+  setTimeout(()=>inlineRename(n.id,true),30);
+}
+function inlineRename(id,isNew){
+  const n=byId(id);
+  const span=document.querySelector(`.node-title[data-id="${id}"]`);
+  if(!span)return;
+  const cur=n.title;
+  span.innerHTML=`<input value="${esc(cur)}" style="width:100%;padding:3px 6px;border:1px solid var(--lav);border-radius:6px;font-weight:600" placeholder="اكتب العنوان…">`;
+  const inp=span.querySelector('input');inp.focus();inp.select();
+  function commit(){n.title=inp.value.trim();saveSoon();renderTree();refreshNodePickers();}
+  inp.addEventListener('blur',commit);
+  inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();inp.blur();}if(ev.key==='Escape'){inp.value=cur;inp.blur();}});
+}
+function delNode(id){
+  const n=byId(id);const kids=descendants(id).length;
+  openModal(`<h3>حذف «${esc(n.title)||n.type}»؟</h3>
+    <p style="color:var(--muted);font-size:14px">${kids?('سيُحذف معه '+kids+' عنصرًا فرعيًا. '):''}لا يمكن التراجع.</p>
+    <div class="modal-acts">
+      <button class="btn terra" id="delYes">نعم، احذف</button>
+      <button class="btn gh" data-act="modal-close">إلغاء</button>
+    </div>`);
+  document.getElementById('delYes').onclick=()=>{
+    const rm=new Set([id,...descendants(id).map(d=>d.id)]);
+    state.nodes=state.nodes.filter(x=>!rm.has(x.id));
+    state.refs.forEach(r=>{if(rm.has(r.nodeId))r.nodeId='';});
+    save();closeModal();renderTree();refreshNodePickers();toast('تم الحذف');
+  };
+}
+function editNode(id){
+  const n=byId(id);const leaf=isLeaf(id);
+  openModal(`<h3>تفاصيل العنصر</h3>
+    <div class="field"><label>العنوان</label><input id="mTitle" value="${esc(n.title)}"></div>
+    <div class="frow">
+      <div class="field"><label>المستوى</label><select id="mType">${LADDER.map(t=>`<option ${t===n.type?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="field"><label>الحالة</label><select id="mStatus">${STATUS.map(s=>`<option ${s===n.status?'selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    ${leaf?`<div class="field"><label>نسبة التقدّم اليدوية: <b id="mProgVal">${n.progress||0}%</b></label>
+      <input id="mProg" type="range" min="0" max="100" step="5" value="${n.progress||0}" style="width:100%">
+      <div style="font-size:11.5px;color:var(--muted);margin-top:4px">تُستخدم فقط للعناصر النهائية بلا فروع. اختيار الحالة «مكتمل» يجعلها 100%.</div></div>`
+      :`<div class="hint">هذا العنصر يحتوي فروعًا، فتقدّمه (${prog(id)}%) يُحسب تلقائيًا من متوسّط فروعه.</div>`}
+    <div class="field"><label>ملاحظات</label><textarea id="mNote">${esc(n.note)}</textarea></div>
+    <div class="modal-acts">
+      <button class="btn pri" id="mSave">حفظ</button>
+      <button class="btn gh" data-act="modal-close">إلغاء</button>
+    </div>`);
+  const pr=document.getElementById('mProg');
+  if(pr)pr.addEventListener('input',()=>{document.getElementById('mProgVal').textContent=pr.value+'%';});
+  document.getElementById('mSave').onclick=()=>{
+    n.title=document.getElementById('mTitle').value.trim();
+    n.type=document.getElementById('mType').value;
+    n.status=document.getElementById('mStatus').value;
+    if(leaf){n.progress=Number(document.getElementById('mProg').value);if(n.status==='مكتمل')n.progress=100;}
+    n.note=document.getElementById('mNote').value;
+    save();closeModal();renderTree();refreshNodePickers();toast('تم الحفظ');
+  };
+}
+
+function seedExample(){
+  openModal(`<h3>تحميل مثال توضيحي؟</h3><p style="color:var(--muted);font-size:14px">سيضيف بنية نموذجية (باب ← فصل ← مبحث ← مطلب ← مسألة) لبيان الفكرة. لن يحذف ما لديك.</p>
+    <div class="modal-acts"><button class="btn pri" id="seedYes">أضِف المثال</button><button class="btn gh" data-act="modal-close">إلغاء</button></div>`);
+  document.getElementById('seedYes').onclick=()=>{
+    const bab={id:uid(),parentId:'root',type:'باب',title:'الباب الأول: الإطار النظري',status:'قيد العمل',progress:0,note:'',collapsed:false};
+    const fasl={id:uid(),parentId:bab.id,type:'فصل',title:'الفصل الأول: مفهوم التحول الرقمي',status:'قيد العمل',progress:0,note:'',collapsed:false};
+    const mab={id:uid(),parentId:fasl.id,type:'مبحث',title:'المبحث الأول: النشأة والتطور',status:'مسودة',progress:0,note:'',collapsed:false};
+    const mat={id:uid(),parentId:mab.id,type:'مطلب',title:'المطلب الأول: التعريف اللغوي والاصطلاحي',status:'مكتمل',progress:100,note:'',collapsed:false};
+    const mas1={id:uid(),parentId:mat.id,type:'مسألة',title:'المسألة الأولى: التعريف عند الغرب',status:'مكتمل',progress:100,note:'',collapsed:false};
+    const mas2={id:uid(),parentId:mat.id,type:'مسألة',title:'المسألة الثانية: التعريف المعاصر',status:'قيد العمل',progress:40,note:'',collapsed:false};
+    const mat2={id:uid(),parentId:mab.id,type:'مطلب',title:'المطلب الثاني: عوامل الظهور',status:'قيد العمل',progress:20,note:'',collapsed:false};
+    state.nodes.push(bab,fasl,mab,mat,mas1,mas2,mat2);
+    save();closeModal();renderTree();refreshNodePickers();renderDash();toast('أُضيف المثال');
+  };
+}
+
+/* ============ NEURAL NETWORK ============ */
+let neuView={x:0,y:0,k:1};
+function layoutTree(){
+  // tidy tree: leaves get sequential x; parents = mean of children; y=depth
+  let leafX=0;const pos={};
+  const GAPX=1,GAPY=1;
+  function first(id,depth){
+    const kids=children(id).filter(k=>{const n=byId(id);return !n.collapsed;});
+    // always layout all (ignore collapse for graph completeness)
+    const allk=children(id);
+    if(allk.length===0){pos[id]={x:leafX++,y:depth};return pos[id];}
+    let sum=0;allk.forEach(k=>{sum+=first(k.id,depth+1).x;});
+    pos[id]={x:sum/allk.length,y:depth};return pos[id];
+  }
+  first('root',0);
+  return pos;
+}
+function wrapLabel(str,maxChars,maxLines){
+  const words=String(str||'').split(/\s+/).filter(Boolean);
+  const lines=[];let cur='';
+  words.forEach(w=>{
+    if(((cur?cur+' ':'')+w).length<=maxChars){cur=(cur?cur+' ':'')+w;}
+    else{ if(cur){lines.push(cur);cur='';}
+      if(w.length>maxChars){let rest=w;while(rest.length>maxChars){lines.push(rest.slice(0,maxChars));rest=rest.slice(maxChars);}cur=rest;}
+      else cur=w;
+    }
+  });
+  if(cur)lines.push(cur);
+  if(!lines.length)return[''];
+  if(lines.length>maxLines){const kept=lines.slice(0,maxLines);kept[maxLines-1]=kept[maxLines-1].slice(0,maxChars-1)+'…';return kept;}
+  return lines;
+}
+function renderNeural(){
+  const svg=document.getElementById('neuralSvg');
+  const pos=layoutTree();
+  const ids=Object.keys(pos);
+  if(ids.length<=1){svg.innerHTML=`<text x="50%" y="50%" text-anchor="middle" fill="#726B62" font-size="16">أضِف عناصر من «الخريطة الذهنية» لتظهر الشبكة</text>`;buildLegend();return;}
+  const xs=ids.map(i=>pos[i].x),ys=ids.map(i=>pos[i].y);
+  const maxX=Math.max(...xs),maxY=Math.max(...ys);
+  const W=svg.clientWidth||900,H=600;
+  const padX=90,padTop=48,padBottom=90;
+  const sx=x=> padX + (maxX===0?0.5:x/maxX)*(W-2*padX);
+  const sy=y=> padTop + (maxY===0?0:y/maxY)*(H-padTop-padBottom);
+  let links='',nodesG='';
+  state.nodes.forEach(n=>{
+    if(!pos[n.id]||!n.parentId||!pos[n.parentId])return;
+    const x1=sx(pos[n.id].x),y1=sy(pos[n.id].y),x2=sx(pos[n.parentId].x),y2=sy(pos[n.parentId].y);
+    const my=(y1+y2)/2;
+    links+=`<path d="M${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}" fill="none" stroke="#A796BE" stroke-width="1.6" opacity=".55"/>`;
+  });
+  state.nodes.forEach(n=>{
+    if(!pos[n.id])return;
+    const x=sx(pos[n.id].x),y=sy(pos[n.id].y);
+    const depth=pos[n.id].y;
+    const r=Math.max(9,20-depth*2.2);
+    const color=LADDER_COLORS[n.type]||'#78658D';
+    const p=prog(n.id);
+    const lines=wrapLabel(n.title||n.type,15,3);
+    const tspans=lines.map((ln,i)=>`<tspan x="${x}" dy="${i===0?0:13}">${esc(ln)}</tspan>`).join('');
+    nodesG+=`<g class="neu-node" data-act="edit" data-id="${n.id}" style="cursor:pointer">
+      <circle cx="${x}" cy="${y}" r="${r+3}" fill="${color}" opacity=".14"/>
+      <circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${color}" stroke-width="2.5"/>
+      <circle cx="${x}" cy="${y}" r="${r*p/100}" fill="${color}" opacity=".85"/>
+      <text x="${x}" y="${y+r+13}" text-anchor="middle" font-size="11" fill="#302D2A" font-weight="600">${tspans}</text>
+      <text x="${x}" y="${y+3}" text-anchor="middle" font-size="8.5" fill="${p>50?'#fff':color}" font-weight="700">${p}%</text>
+    </g>`;
+  });
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML=`<g id="neuG" transform="translate(${neuView.x},${neuView.y}) scale(${neuView.k})">${links}${nodesG}</g>`;
+  buildLegend();
+  neuFit(true);
+}
+function buildLegend(){
+  document.getElementById('neuLegend').innerHTML=LADDER.filter(t=>t!=='فرع').map(t=>`<span><i style="background:${LADDER_COLORS[t]}"></i>${t}</span>`).join('');
+}
+function applyNeu(){const g=document.getElementById('neuG');if(g)g.setAttribute('transform',`translate(${neuView.x},${neuView.y}) scale(${neuView.k})`);}
+function neuZoom(f){neuView.k=Math.max(.3,Math.min(3,neuView.k*f));applyNeu();}
+function neuFit(silent){neuView={x:0,y:0,k:1};applyNeu();}
+(function neuDrag(){
+  const svg=document.getElementById('neuralSvg');let dragging=false,sx=0,sy=0,ox=0,oy=0;
+  function down(e){dragging=true;svg.classList.add('drag');const p=pt(e);sx=p.x;sy=p.y;ox=neuView.x;oy=neuView.y;}
+  function move(e){if(!dragging)return;const p=pt(e);neuView.x=ox+(p.x-sx);neuView.y=oy+(p.y-sy);applyNeu();}
+  function up(){dragging=false;svg.classList.remove('drag');}
+  function pt(e){const t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY};}
+  svg.addEventListener('mousedown',down);window.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
+  svg.addEventListener('touchstart',e=>{if(e.target.closest('.neu-node'))return;down(e);},{passive:true});
+  svg.addEventListener('touchmove',e=>{if(dragging){e.preventDefault();move(e);}},{passive:false});
+  svg.addEventListener('touchend',up);
+  svg.addEventListener('wheel',e=>{e.preventDefault();neuZoom(e.deltaY<0?1.1:1/1.1);},{passive:false});
+})();
+
+/* ============ TIMER ============ */
+let timer={running:false,mode:'work',remain:25*60,total:25*60,int:null,startTs:null,nodeAtStart:null};
+const cfgWork=document.getElementById('cfgWork'),cfgShort=document.getElementById('cfgShort'),cfgLong=document.getElementById('cfgLong'),cfgNode=document.getElementById('cfgNode');
+[cfgWork,cfgShort,cfgLong].forEach(inp=>inp.addEventListener('change',()=>{
+  state.timer.work=+cfgWork.value;state.timer.short=+cfgShort.value;state.timer.long=+cfgLong.value;saveSoon();
+  if(!timer.running&&timer.mode==='work'){timer.remain=timer.total=state.timer.work*60;renderTimer();}
+}));
+function modeLabel(m){return m==='work'?'🎯 وقت التركيز':m==='short'?'☕ راحة قصيرة':'🌿 راحة طويلة';}
+function modeMinutes(m){return m==='work'?state.timer.work:m==='short'?state.timer.short:state.timer.long;}
+function renderTimer(){
+  const mm=String(Math.floor(timer.remain/60)).padStart(2,'0');
+  const ss=String(timer.remain%60).padStart(2,'0');
+  document.getElementById('timerMode').textContent=timer.running?modeLabel(timer.mode):(modeLabel(timer.mode));
+  const pct=timer.total?(1-timer.remain/timer.total)*100:0;
+  const size=220,stroke=14,r=(size-stroke)/2,c=2*Math.PI*r,off=c*(1-pct/100);
+  const col=timer.mode==='work'?'#78658D':'#7D8167';
+  document.getElementById('timerRing').innerHTML=`
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#EDE7F1" stroke-width="${stroke}"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}"
+      stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round" transform="rotate(-90 ${size/2} ${size/2})" style="transition:stroke-dashoffset 1s linear"/>
+    <text x="50%" y="50%" text-anchor="middle" dy=".33em" font-family="var(--serif)" font-weight="800" font-size="44" fill="#4E4173">${mm}:${ss}</text>`;
+  // session dots (out of 4 before long break)
+  const cyc=state.timer.cycle%4;
+  let dots='';for(let i=0;i<4;i++)dots+=`<i class="${i<cyc?'done':''}"></i>`;
+  document.getElementById('sessionDots').innerHTML=dots;
+}
+function tick(){
+  timer.remain--;
+  if(timer.remain<=0){timerComplete();return;}
+  renderTimer();
+}
+function timerStart(){
+  if(timer.running)return;
+  timer.running=true;timer.startTs=Date.now();timer.nodeAtStart=cfgNode.value;
+  timer.int=setInterval(tick,1000);
+  document.getElementById('timerMode').textContent=modeLabel(timer.mode);
+}
+function timerPause(){if(!timer.running)return;timer.running=false;clearInterval(timer.int);logPartial();}
+function timerReset(){timer.running=false;clearInterval(timer.int);timer.remain=timer.total=modeMinutes(timer.mode)*60;renderTimer();}
+function timerSkip(){timer.running=false;clearInterval(timer.int);logPartial();advanceMode();}
+function logPartial(){
+  // log focus minutes only for work mode elapsed
+  if(timer.mode!=='work')return;
+  const elapsed=Math.round((timer.total-timer.remain)/60);
+  if(elapsed>0){state.focusLog.push({date:todayStr(),minutes:elapsed,nodeId:timer.nodeAtStart||''});saveSoon();}
+  timer.total=timer.remain+ (timer.total-timer.remain); // keep
+  // reset baseline so we don't double count on next pause
+  timer.total=timer.remain;
+}
+function timerComplete(){
+  clearInterval(timer.int);timer.running=false;
+  chime();
+  if(timer.mode==='work'){
+    state.focusLog.push({date:todayStr(),minutes:modeMinutes('work'),nodeId:timer.nodeAtStart||''});
+    state.timer.cycle++;saveSoon();
+    toast('انتهت نوبة التركيز! خذ راحتك 🌿');
+  }else{toast('انتهت الراحة — هيّا نكمل 🎯');}
+  advanceMode();
+}
+function advanceMode(){
+  if(timer.mode==='work'){
+    timer.mode=(state.timer.cycle>0&&state.timer.cycle%4===0)?'long':'short';
+  }else{timer.mode='work';}
+  timer.remain=timer.total=modeMinutes(timer.mode)*60;
+  renderTimer();
+}
+function chime(){
+  try{const ac=new(window.AudioContext||window.webkitAudioContext)();
+    [0,0.18,0.36].forEach((t,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);
+      o.frequency.value=[660,880,990][i];o.type='sine';g.gain.setValueAtTime(0.001,ac.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(0.25,ac.currentTime+t+0.02);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+t+0.25);
+      o.start(ac.currentTime+t);o.stop(ac.currentTime+t+0.26);});
+  }catch(e){}
+}
+
+/* ============ STATS ============ */
+document.getElementById('statSubtabs').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-stab]');if(!b)return;
+  document.querySelectorAll('#statSubtabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.querySelectorAll('.stab').forEach(s=>s.style.display='none');
+  document.getElementById('stab-'+b.dataset.stab).style.display='block';
+});
+function parseNums(str){return (str.match(/-?\d+(?:\.\d+)?/g)||[]).map(Number);}
+function calcDesc(){
+  const a=parseNums(document.getElementById('descData').value).sort((x,y)=>x-y);
+  if(a.length<2){document.getElementById('descOut').innerHTML=`<div class="result-box">أدخل قيمتين على الأقل.</div>`;return;}
+  const n=a.length,sum=a.reduce((p,c)=>p+c,0),mean=sum/n;
+  const median=n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2;
+  const variance=a.reduce((p,c)=>p+(c-mean)**2,0)/(n-1);
+  const sd=Math.sqrt(variance),se=sd/Math.sqrt(n);
+  // mode
+  const freq={};let mode=[],mx=0;a.forEach(v=>{freq[v]=(freq[v]||0)+1;if(freq[v]>mx)mx=freq[v];});
+  Object.keys(freq).forEach(k=>{if(freq[k]===mx)mode.push(k);});
+  const rnd=x=>Math.round(x*1000)/1000;
+  const cells=[['العدد n',n],['المجموع',rnd(sum)],['المتوسط',rnd(mean)],['الوسيط',rnd(median)],['المنوال',mx>1?mode.join(', '):'—'],['أصغر قيمة',a[0]],['أكبر قيمة',a[n-1]],['المدى',rnd(a[n-1]-a[0])],['التباين',rnd(variance)],['الانحراف المعياري',rnd(sd)],['الخطأ المعياري',rnd(se)]];
+  document.getElementById('descOut').innerHTML=`<div class="result-box"><div class="stat-grid">${cells.map(c=>`<div class="stat-cell"><div class="n">${c[1]}</div><div class="l">${c[0]}</div></div>`).join('')}</div></div>`;
+}
+function calcAlpha(){
+  const rows=document.getElementById('alphaData').value.trim().split(/\n+/).map(r=>parseNums(r)).filter(r=>r.length);
+  const out=document.getElementById('alphaOut');
+  if(rows.length<2){out.innerHTML=`<div class="result-box">أدخل سطرين على الأقل (مستجيبَين).</div>`;return;}
+  const k=rows[0].length;
+  if(k<2||!rows.every(r=>r.length===k)){out.innerHTML=`<div class="result-box">يجب أن تحتوي كل الأسطر على نفس عدد الفقرات (≥ 2).</div>`;return;}
+  // item variances
+  function varOf(arr){const m=arr.reduce((p,c)=>p+c,0)/arr.length;return arr.reduce((p,c)=>p+(c-m)**2,0)/(arr.length-1);}
+  let sumItemVar=0;
+  for(let j=0;j<k;j++){sumItemVar+=varOf(rows.map(r=>r[j]));}
+  const totals=rows.map(r=>r.reduce((p,c)=>p+c,0));
+  const totalVar=varOf(totals);
+  const alpha=(k/(k-1))*(1-sumItemVar/totalVar);
+  let verdict= alpha>=0.9?'ممتاز':alpha>=0.8?'جيد جدًا':alpha>=0.7?'مقبول':alpha>=0.6?'مشكوك فيه':'ضعيف';
+  const col= alpha>=0.7?'#7D8167':alpha>=0.6?'#C8991A':'#B16D4C';
+  out.innerHTML=`<div class="result-box">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      ${donutSVG(Math.max(0,Math.round(alpha*100)),110,12,col)}
+      <div><div style="font-family:var(--serif);font-size:30px;font-weight:800;color:${col}">α = ${Math.round(alpha*1000)/1000}</div>
+      <div style="font-weight:700;color:${col}">التقدير: ${verdict}</div>
+      <div style="font-size:12.5px;color:var(--muted)">عدد الفقرات: ${k} · عدد المستجيبين: ${rows.length}</div></div>
+    </div>
+    <div class="hint" style="margin:12px 0 0">القاعدة الشائعة: α ≥ 0.70 يُعدّ مقبولًا لثبات الأداة.</div></div>`;
+}
+function calcSample(){
+  const z=+document.getElementById('smpConf').value;
+  const e=(+document.getElementById('smpE').value)/100;
+  const p=+document.getElementById('smpP').value;
+  const N=document.getElementById('smpN').value?+document.getElementById('smpN').value:null;
+  const out=document.getElementById('sampleOut');
+  if(!(e>0)||!(p>0&&p<1)){out.innerHTML=`<div class="result-box">تحقّق من هامش الخطأ والنسبة.</div>`;return;}
+  const n0=(z*z*p*(1-p))/(e*e);
+  let n=n0;
+  if(N){n=n0/(1+(n0-1)/N);}
+  out.innerHTML=`<div class="result-box"><div class="stat-grid">
+    <div class="stat-cell"><div class="n">${Math.ceil(n)}</div><div class="l">حجم العينة المطلوب</div></div>
+    <div class="stat-cell"><div class="n">${Math.ceil(n0)}</div><div class="l">قبل التعديل n₀</div></div>
+    <div class="stat-cell"><div class="n">${N||'∞'}</div><div class="l">حجم المجتمع</div></div>
+  </div><div class="hint" style="margin:12px 0 0">معادلة كوكران بمستوى ثقة ${document.getElementById('smpConf').selectedOptions[0].text} وهامش خطأ ${document.getElementById('smpE').value}%.</div></div>`;
+}
+function calcFreq(){
+  const raw=document.getElementById('freqData').value.trim();
+  const items=raw.split(/[\n,،]+/).map(s=>s.trim()).filter(Boolean);
+  const out=document.getElementById('freqOut');
+  if(!items.length){out.innerHTML=`<div class="result-box">أدخل بيانات فئوية.</div>`;return;}
+  const f={};items.forEach(v=>f[v]=(f[v]||0)+1);
+  const total=items.length;
+  const rows=Object.keys(f).sort((a,b)=>f[b]-f[a]);
+  const colors=['#78658D','#7D8167','#B16D4C','#C8991A','#A796BE','#61654E','#C7A16B'];
+  out.innerHTML=`<div class="result-box"><table style="width:100%;border-collapse:collapse;font-size:13.5px">
+    <tr><th style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">الفئة</th><th style="padding:6px;border-bottom:2px solid var(--line)">التكرار</th><th style="padding:6px;border-bottom:2px solid var(--line)">النسبة</th><th style="width:35%;padding:6px;border-bottom:2px solid var(--line)"></th></tr>
+    ${rows.map((k,i)=>{const pct=Math.round(f[k]/total*1000)/10;return `<tr><td style="padding:6px">${esc(k)}</td><td style="text-align:center;padding:6px">${f[k]}</td><td style="text-align:center;padding:6px">${pct}%</td><td style="padding:6px"><div class="pbar"><span style="width:${pct}%;background:${colors[i%colors.length]}"></span></div></td></tr>`;}).join('')}
+    <tr style="font-weight:800"><td style="padding:6px">الإجمالي</td><td style="text-align:center;padding:6px">${total}</td><td style="text-align:center;padding:6px">100%</td><td></td></tr>
+  </table></div>`;
+}
+
+/* ============ REFERENCES ============ */
+function fmtCite(r,style){
+  const A=r.author||'المؤلف',Y=r.year||'ت.د',T=r.title||'العنوان',P=r.pub||'',pg=r.page||'';
+  if(style==='apa')return `${A} (${Y}). ${T}. ${P}${P&&pg?'، ':''}${pg?'('+pg+')':''}.`.replace(/\s+\./g,'.');
+  if(style==='chicago')return `${A}. ${T}. ${P}، ${Y}${pg?'، '+pg:''}.`;
+  return `${A}، ${T}، ${P}، ${Y}${pg?'، '+pg:''}.`;
+}
+function saveRef(){
+  const r={id:uid(),
+    quote:document.getElementById('rfQuote').value.trim(),
+    author:document.getElementById('rfAuthor').value.trim(),
+    year:document.getElementById('rfYear').value.trim(),
+    title:document.getElementById('rfTitle').value.trim(),
+    pub:document.getElementById('rfPub').value.trim(),
+    page:document.getElementById('rfPage').value.trim(),
+    nodeId:document.getElementById('rfNode').value,
+    style:document.getElementById('rfStyle').value,
+    status:document.getElementById('rfStatus').value,
+    rating:+document.getElementById('rfRating').value,
+    tags:document.getElementById('rfTags').value.split(/[,،]/).map(s=>s.trim()).filter(Boolean),
+    matrix:{}};
+  if(!r.title&&!r.quote){toast('أضف اقتباسًا أو عنوان مصدر على الأقل');return;}
+  state.refs.unshift(r);save();
+  ['rfQuote','rfAuthor','rfYear','rfTitle','rfPub','rfPage','rfTags'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rfRating').value='0';
+  renderRefs();toast('حُفظ المرجع ✅');
+}
+function renderRefs(){
+  const q=(document.getElementById('refSearch').value||'').trim().toLowerCase();
+  const fil=document.getElementById('refFilter').value;
+  let list=state.refs;
+  if(q)list=list.filter(r=>[r.quote,r.author,r.title,r.pub,(r.tags||[]).join(' ')].join(' ').toLowerCase().includes(q));
+  if(fil)list=list.filter(r=>r.status===fil);
+  document.getElementById('refCount').textContent=state.refs.length+' مرجع';
+  const box=document.getElementById('refList');
+  if(!list.length){box.innerHTML=`<div class="empty"><div class="em">📚</div>${state.refs.length?'لا نتائج مطابقة.':'لا مراجع بعد — أضف أول مرجع أو استورد ملف BibTeX/RIS.'}</div>`;return;}
+  box.innerHTML=list.map(r=>{
+    const node=r.nodeId?byId(r.nodeId):null;
+    const cite=fmtCite(r,r.style);
+    const stars=r.rating?'⭐'.repeat(r.rating):'';
+    const mx=r.matrix&&Object.values(r.matrix).some(Boolean);
+    return `<div class="ref-card">
+      <div class="rhead"><h4>${esc(r.title)||'(بلا عنوان)'} ${r.year?`<span class="chip">${esc(r.year)}</span>`:''}</h4>
+        <div class="node-acts">
+          <button class="iconbtn" data-act="ref-matrix" data-id="${r.id}" title="مصفوفة الأدبيات">🔬</button>
+          <button class="iconbtn" data-act="ref-copyquote" data-id="${r.id}" title="نسخ الاقتباس">📋</button>
+          <button class="iconbtn" data-act="ref-del" data-id="${r.id}" title="حذف">🗑️</button>
+        </div></div>
+      ${r.quote?`<div class="quote">« ${esc(r.quote)} »</div>`:''}
+      <div class="meta">${[r.author,r.pub,r.page].filter(Boolean).map(esc).join(' · ')}</div>
+      <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+        ${r.status?`<span class="chip">${esc(r.status)}</span>`:''}${stars?`<span style="font-size:12px">${stars}</span>`:''}
+        ${node?`<span class="chip tag-lav">🔗 ${esc(node.title)||node.type}</span>`:''}
+        ${mx?`<span class="chip" style="background:var(--terra-tint);color:var(--terra)">🔬 محلّل</span>`:''}
+        ${(r.tags||[]).map(t=>`<span class="lib-tag">${esc(t)}</span>`).join('')}
+      </div>
+      <div class="cite" data-cite="${esc(cite)}">${esc(cite)} <button class="btn sm gh" style="margin-right:6px;padding:2px 8px" data-act="ref-copy" data-id="${r.id}">نسخ الاستشهاد</button></div>
+    </div>`;
+  }).join('');
+}
+document.getElementById('refSearch').addEventListener('input',renderRefs);
+document.getElementById('refFilter').addEventListener('change',renderRefs);
+document.getElementById('refFile').addEventListener('change',importRefFile);
+
+/* ---- reference literature matrix ---- */
+function refMatrix(id){
+  const r=state.refs.find(x=>x.id===id);if(!r)return;const m=r.matrix||{};
+  openModal(`<h3>مصفوفة الأدبيات — ${esc(r.title||'مرجع')}</h3>
+    <div class="field"><label>مشكلة / هدف الدراسة</label><textarea id="mxAim">${esc(m.aim||'')}</textarea></div>
+    <div class="frow">
+      <div class="field"><label>المنهج</label><input id="mxMethod" value="${esc(m.method||'')}"></div>
+      <div class="field"><label>العينة</label><input id="mxSample" value="${esc(m.sample||'')}"></div>
+    </div>
+    <div class="field"><label>أبرز النتائج</label><textarea id="mxFind">${esc(m.findings||'')}</textarea></div>
+    <div class="field"><label>الفجوة / صلته ببحثي</label><textarea id="mxGap">${esc(m.gap||'')}</textarea></div>
+    <div class="modal-acts"><button class="btn pri" id="mxSave">حفظ</button><button class="btn gh" data-act="modal-close">إغلاق</button></div>`);
+  document.getElementById('mxSave').onclick=()=>{
+    r.matrix={aim:document.getElementById('mxAim').value,method:document.getElementById('mxMethod').value,sample:document.getElementById('mxSample').value,findings:document.getElementById('mxFind').value,gap:document.getElementById('mxGap').value};
+    save();closeModal();renderRefs();toast('حُفظت المصفوفة');
+  };
+}
+
+/* ---- BibTeX / RIS import ---- */
+function importRefFile(e){
+  const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{const txt=rd.result;let added=0;
+    if(/^\s*TY\s*-/m.test(txt)||/\n\s*ER\s*-/.test(txt))added=parseRIS(txt);
+    else added=parseBibTeX(txt);
+    save();renderRefs();toast(added?`أُضيف ${added} مرجعًا ✅`:'لم أتعرّف على مراجع في الملف');
+  };
+  rd.readAsText(f);e.target.value='';
+}
+function parseBibTeX(txt){
+  let n=0;const entries=txt.split(/@(?=\w+\s*\{)/).slice(1);
+  entries.forEach(en=>{
+    const type=(en.match(/^(\w+)/)||[])[1]||'';
+    const g=k=>{const m=en.match(new RegExp(k+'\\s*=\\s*[\\{\"]([\\s\\S]*?)[\\}\"]\\s*,?','i'));return m?m[1].replace(/[{}]/g,'').replace(/\s+/g,' ').trim():'';};
+    const title=g('title');if(!title)return;
+    state.refs.unshift({id:uid(),quote:'',author:g('author'),year:g('year'),title:title,pub:g('journal')||g('publisher')||g('booktitle'),page:g('pages'),nodeId:'',style:'apa',status:'لم يُقرأ',rating:0,tags:[type].filter(Boolean),matrix:{}});
+    n++;
+  });
+  return n;
+}
+function parseRIS(txt){
+  let n=0;const blocks=txt.split(/\n(?=TY\s*-)/);
+  blocks.forEach(b=>{
+    const g=tag=>{const m=b.match(new RegExp('^'+tag+'\\s*-\\s*(.+)$','m'));return m?m[1].trim():'';};
+    const title=g('TI')||g('T1');if(!title)return;
+    const au=[];const re=/^A[U1]\s*-\s*(.+)$/gm;let mm;while((mm=re.exec(b)))au.push(mm[1].trim());
+    state.refs.unshift({id:uid(),quote:'',author:au.join('، '),year:(g('PY')||g('Y1')).slice(0,4),title:title,pub:g('JO')||g('T2')||g('PB'),page:g('SP')?('ص '+g('SP')+(g('EP')?'-'+g('EP'):'')):'',nodeId:'',style:'apa',status:'لم يُقرأ',rating:0,tags:[],matrix:{}});
+    n++;
+  });
+  return n;
+}
+function exportBibliography(){
+  if(!state.refs.length){toast('لا مراجع للتصدير');return;}
+  const sorted=[...state.refs].sort((a,b)=>(a.author||a.title||'').localeCompare(b.author||b.title||'','ar'));
+  let body=wPar('قائمة المراجع',{size:34,color:'4E4173',bold:true,center:true});
+  sorted.forEach(r=>body+=wPar(fmtCite(r,r.style),{size:26,after:120}));
+  downloadDocx('قائمة_المراجع',body);
+  toast('صُدّرت قائمة المراجع 📄');
+}
+function downloadDocx(name,body){
+  const sect='<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/><w:bidi/></w:sectPr>';
+  const documentXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+body+sect+'</w:body></w:document>';
+  const contentTypes='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  const rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  const zip=zipStore([{name:'[Content_Types].xml',data:u8(contentTypes)},{name:'_rels/.rels',data:u8(rels)},{name:'word/document.xml',data:u8(documentXml)}]);
+  const blob=new Blob([zip],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name+'.docx';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function copyText(t,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>toast(msg||'نُسخ')).catch(()=>fallbackCopy(t,msg));}
+  else fallbackCopy(t,msg);
+}
+function fallbackCopy(t,msg){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity=0;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg||'نُسخ');}catch(e){toast('انسخ يدويًا');}document.body.removeChild(ta);}
+function copyRefCite(id){const r=state.refs.find(x=>x.id===id);if(r)copyText(fmtCite(r,r.style),'نُسخ الاستشهاد ✅');}
+function copyRefQuote(id){const r=state.refs.find(x=>x.id===id);if(r)copyText('« '+r.quote+' » ('+fmtCite(r,r.style)+')','نُسخ الاقتباس مع مصدره ✅');}
+function delRef(id){state.refs=state.refs.filter(x=>x.id!==id);save();renderRefs();toast('حُذف');}
+
+/* ============ TASKS / CALENDAR / TIMELINE ============ */
+const TASK_STATUS=['لم يبدأ','قيد العمل','منجز'];
+const PRIOS=['عالية','متوسطة','منخفضة'];
+const PRIO_COLOR={'عالية':'#B16D4C','متوسطة':'#C8991A','منخفضة':'#7D8167'};
+const AR_MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const AR_DOW=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+let calCur=(function(){const d=new Date();return{y:d.getFullYear(),m:d.getMonth()};})();
+let taskTab='list';
+
+function parseD(s){if(!s)return null;const a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2]);}
+function fmtD(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function dayDiff(a,b){return Math.round((b-a)/86400000);}
+function nodeLabel(id){const n=byId(id);return n?((n.type!=='الرسالة'?n.type+': ':'')+(n.title||'(بلا عنوان)')):'';}
+
+document.getElementById('taskSubtabs').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-ttab]');if(!b)return;
+  document.querySelectorAll('#taskSubtabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  taskTab=b.dataset.ttab;
+  document.querySelectorAll('.ttab').forEach(s=>s.style.display='none');
+  document.getElementById('ttab-'+taskTab).style.display='block';
+});
+
+function renderTasks(){renderTaskList();renderCalendar();renderTimeline();updateOverdueBar();}
+function updateOverdueBar(){
+  const bar=document.getElementById('overdueBar');if(!bar)return;
+  const today=fmtD(new Date());
+  const over=state.tasks.filter(t=>t.due&&t.status!=='منجز'&&t.due<today);
+  const soon=state.tasks.filter(t=>t.due&&t.status!=='منجز'&&t.due>=today&&daysBetweenStr(today,t.due)<=3);
+  if(!over.length&&!soon.length){bar.style.display='none';return;}
+  bar.style.display='block';
+  bar.innerHTML=(over.length?`<span style="color:var(--terra);font-weight:700">⚠️ ${over.length} مهمة متأخرة</span>`:'')+
+    (over.length&&soon.length?' · ':'')+
+    (soon.length?`<span style="color:var(--gold-d);font-weight:700">⏳ ${soon.length} مستحقة خلال 3 أيام</span>`:'');
+}
+function daysBetweenStr(a,b){return Math.round((parseD(b)-parseD(a))/86400000);}
+
+function renderTaskList(){
+  const box=document.getElementById('ttab-list');
+  if(!state.tasks.length){box.innerHTML=`<div class="empty"><div class="em">🗓️</div>لا مهام بعد — أضف مهمة أو حمّل مهامًا نموذجية.</div>`;return;}
+  const today=fmtD(new Date());
+  const sorted=[...state.tasks].sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
+  box.innerHTML=sorted.map(t=>{
+    const done=t.status==='منجز';
+    const overdue=t.due&&!done&&t.due<today;
+    const node=t.nodeId?byId(t.nodeId):null;
+    return `<div class="task-row">
+      <div class="task-check ${done?'done':''}" data-act="toggle-task" data-id="${t.id}">${done?'✓':''}</div>
+      <div class="task-main">
+        <div class="tt ${done?'done':''}">${esc(t.title)||'(بلا عنوان)'}</div>
+        <div class="tm">
+          <span class="prio prio-${t.priority}">${t.priority}</span>
+          ${t.due?`<span class="${overdue?'overdue':''}">📅 ${t.due}${overdue?' (متأخرة)':''}</span>`:''}
+          ${node?`<span class="chip tag-lav">🔗 ${esc(node.title)||node.type}</span>`:''}
+          <span class="chip">${t.status}</span>
+        </div>
+      </div>
+      <div class="node-acts">
+        ${t.due?`<button class="iconbtn" data-act="task-gcal" data-id="${t.id}" title="أضف إلى Google Calendar">📆</button>`:''}
+        <button class="iconbtn" data-act="edit-task" data-id="${t.id}" title="تعديل">✏️</button>
+        <button class="iconbtn" data-act="del-task" data-id="${t.id}" title="حذف">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function calShift(d){calCur.m+=d;if(calCur.m<0){calCur.m=11;calCur.y--;}if(calCur.m>11){calCur.m=0;calCur.y++;}renderCalendar();}
+function calToday(){const d=new Date();calCur={y:d.getFullYear(),m:d.getMonth()};renderCalendar();}
+function renderCalendar(){
+  document.getElementById('calTitle').textContent=AR_MONTHS[calCur.m]+' '+calCur.y;
+  const first=new Date(calCur.y,calCur.m,1);
+  const startOffset=first.getDay(); // 0=Sunday
+  const gridStart=new Date(calCur.y,calCur.m,1-startOffset);
+  const today=fmtD(new Date());
+  let html=AR_DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  for(let i=0;i<42;i++){
+    const cell=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i);
+    const ds=fmtD(cell);
+    const other=cell.getMonth()!==calCur.m;
+    const isToday=ds===today;
+    const dayTasks=state.tasks.filter(t=>t.due===ds);
+    html+=`<div class="cal-cell ${other?'other':''} ${isToday?'today':''}">
+      <div class="dn">${cell.getDate()}</div>
+      ${dayTasks.slice(0,3).map(t=>`<div class="cal-task" data-act="edit-task" data-id="${t.id}" style="background:${t.status==='منجز'?'#7D8167':PRIO_COLOR[t.priority]}">${esc(t.title).slice(0,18)}</div>`).join('')}
+      ${dayTasks.length>3?`<div style="font-size:9.5px;color:var(--muted)">+${dayTasks.length-3} أخرى</div>`:''}
+    </div>`;
+  }
+  document.getElementById('calGrid').innerHTML=html;
+}
+
+function renderTimeline(){
+  const box=document.getElementById('tlCard');
+  const tasks=state.tasks.filter(t=>t.due||t.start);
+  if(!tasks.length){box.innerHTML=`<div class="empty"><div class="em">📊</div>أضف مهامًا بتواريخ لعرض الخط الزمني.</div>`;return;}
+  let min=null,max=null;
+  tasks.forEach(t=>{const s=parseD(t.start||t.due),e=parseD(t.due||t.start);if(!min||s<min)min=s;if(!max||e>max)max=e;});
+  const total=Math.max(1,dayDiff(min,max)+1);
+  const today=new Date();today.setHours(0,0,0,0);
+  // month ticks
+  let ticks='';const tk=new Date(min.getFullYear(),min.getMonth(),1);
+  while(tk<=max){const off=dayDiff(min,tk);if(off>=0){const left=(off/total)*100;ticks+=`<span class="tl-tick" style="right:${left}%">${AR_MONTHS[tk.getMonth()].slice(0,3)} ${String(tk.getFullYear()).slice(2)}</span>`;}tk.setMonth(tk.getMonth()+1);}
+  const todOff=dayDiff(min,today);
+  const todLeft=(todOff>=0&&todOff<=total)?`<div class="tl-today" style="right:${(todOff/total)*100}%"></div>`:'';
+  const sorted=[...tasks].sort((a,b)=>(a.start||a.due||'').localeCompare(b.start||b.due||''));
+  let rows='';
+  sorted.forEach(t=>{
+    const s=parseD(t.start||t.due),e=parseD(t.due||t.start);
+    const left=(dayDiff(min,s)/total)*100;
+    const w=Math.max(2.5,((dayDiff(s,e)+1)/total)*100);
+    const col=t.status==='منجز'?'#7D8167':PRIO_COLOR[t.priority];
+    rows+=`<div class="tl-row">
+      <div class="tl-label" title="${esc(t.title)}">${esc(t.title)}</div>
+      <div class="tl-track">${todLeft}
+        <div class="tl-bar" data-act="edit-task" data-id="${t.id}" style="right:${left}%;width:${w}%;background:${col}">${t.due||''}</div>
+      </div></div>`;
+  });
+  box.innerHTML=`<div class="tl-months"><div></div><div class="tl-scale">${ticks}</div></div>${rows}
+    <div class="hint" style="margin:12px 0 0">الشريط الأحمر العمودي يمثّل اليوم. لون المهمة حسب أولويتها، والأخضر يعني «منجزة».</div>`;
+}
+
+function editTask(id){
+  const t=id?state.tasks.find(x=>x.id===id):{id:null,title:'',nodeId:'',start:'',due:'',status:'لم يبدأ',priority:'متوسطة'};
+  const nodeOpts='<option value="">— غير مرتبطة —</option>'+state.nodes.filter(n=>n.id!=='root').map(n=>`<option value="${n.id}" ${n.id===t.nodeId?'selected':''}>${esc(nodeLabel(n.id))}</option>`).join('');
+  openModal(`<h3>${id?'تعديل مهمة':'مهمة جديدة'}</h3>
+    <div class="field"><label>عنوان المهمة</label><input id="tkTitle" value="${esc(t.title)}" placeholder="مثال: كتابة المبحث الأول"></div>
+    <div class="frow">
+      <div class="field"><label>تاريخ البدء</label><input id="tkStart" type="date" value="${t.start||''}"></div>
+      <div class="field"><label>تاريخ الاستحقاق</label><input id="tkDue" type="date" value="${t.due||''}"></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>الأولوية</label><select id="tkPrio">${PRIOS.map(p=>`<option ${p===t.priority?'selected':''}>${p}</option>`).join('')}</select></div>
+      <div class="field"><label>الحالة</label><select id="tkStatus">${TASK_STATUS.map(s=>`<option ${s===t.status?'selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>مرتبطة بعنصر</label><select id="tkNode">${nodeOpts}</select></div>
+    <div class="modal-acts">
+      <button class="btn pri" id="tkSave">حفظ</button>
+      ${id?'<button class="btn terra" id="tkDel">حذف</button>':''}
+      <button class="btn gh" data-act="modal-close">إلغاء</button>
+    </div>`);
+  document.getElementById('tkSave').onclick=()=>{
+    const obj={title:document.getElementById('tkTitle').value.trim(),start:document.getElementById('tkStart').value,due:document.getElementById('tkDue').value,priority:document.getElementById('tkPrio').value,status:document.getElementById('tkStatus').value,nodeId:document.getElementById('tkNode').value};
+    if(!obj.title){toast('اكتب عنوان المهمة');return;}
+    if(id){Object.assign(t,obj);}else{state.tasks.push({id:uid(),...obj});}
+    save();closeModal();renderTasks();renderDash();toast('حُفظت المهمة ✅');
+  };
+  if(id){document.getElementById('tkDel').onclick=()=>{state.tasks=state.tasks.filter(x=>x.id!==id);save();closeModal();renderTasks();toast('حُذفت');};}
+}
+function delTask(id){state.tasks=state.tasks.filter(x=>x.id!==id);save();renderTasks();toast('حُذفت المهمة');}
+function toggleTask(id){const t=state.tasks.find(x=>x.id===id);if(!t)return;t.status=(t.status==='منجز')?'قيد العمل':'منجز';save();renderTasks();renderDash();}
+function seedTasks(){
+  const base=new Date();base.setHours(0,0,0,0);
+  const mk=(off,dur,title,prio,status)=>{const s=new Date(base);s.setDate(s.getDate()+off);const d=new Date(s);d.setDate(d.getDate()+dur);return{id:uid(),title,start:fmtD(s),due:fmtD(d),priority:prio,status,nodeId:''};};
+  state.tasks.push(
+    mk(-5,4,'اعتماد المقترح من المشرف','عالية','منجز'),
+    mk(0,10,'إنهاء مراجعة الأدبيات','عالية','قيد العمل'),
+    mk(8,6,'تصميم أداة البحث وتحكيمها','عالية','لم يبدأ'),
+    mk(16,12,'جمع البيانات الميدانية','متوسطة','لم يبدأ'),
+    mk(30,8,'تحليل البيانات إحصائيًا','عالية','لم يبدأ'),
+    mk(40,10,'كتابة فصل النتائج والمناقشة','عالية','لم يبدأ'),
+    mk(52,5,'المراجعة اللغوية وفحص الانتحال','متوسطة','لم يبدأ')
+  );
+  save();renderTasks();renderDash();toast('أُضيفت مهام نموذجية');
+}
+
+/* ============ EXPORT TO WORD (real .docx) ============ */
+function xmlEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));}
+function u8(s){return new TextEncoder().encode(s);}
+function crc32(bytes){
+  let t=crc32._t;
+  if(!t){t=crc32._t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}}
+  let crc=0xFFFFFFFF;
+  for(let i=0;i<bytes.length;i++)crc=(crc>>>8)^t[(crc^bytes[i])&0xFF];
+  return (crc^0xFFFFFFFF)>>>0;
+}
+function zipStore(files){
+  const parts=[],central=[];let offset=0;
+  const u16=n=>[n&255,(n>>8)&255],u32=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>24)&255];
+  files.forEach(f=>{
+    const nameB=u8(f.name),data=f.data,crc=crc32(data),len=data.length;
+    const lh=[0x50,0x4b,0x03,0x04,...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(len),...u32(len),...u16(nameB.length),...u16(0)];
+    parts.push(new Uint8Array(lh),nameB,data);
+    const cd=[0x50,0x4b,0x01,0x02,...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(len),...u32(len),...u16(nameB.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset)];
+    central.push(new Uint8Array(cd),nameB);
+    offset+=lh.length+nameB.length+len;
+  });
+  let cSize=0;central.forEach(c=>cSize+=c.length);
+  const eocd=[0x50,0x4b,0x05,0x06,...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(cSize),...u32(offset),...u16(0)];
+  const all=parts.concat(central,[new Uint8Array(eocd)]);
+  let total=0;all.forEach(a=>total+=a.length);
+  const out=new Uint8Array(total);let p=0;all.forEach(a=>{out.set(a,p);p+=a.length;});
+  return out;
+}
+function wPar(text,o){o=o||{};
+  let ppr='<w:pPr><w:bidi/>';
+  if(o.pageBreak)ppr+='<w:pageBreakBefore/>';
+  ppr+='<w:jc w:val="'+(o.center?'center':'both')+'"/>';
+  ppr+='<w:spacing w:before="'+(o.before==null?120:o.before)+'" w:after="'+(o.after==null?80:o.after)+'" w:line="'+(o.line||360)+'" w:lineRule="auto"/>';
+  if(o.indent)ppr+='<w:ind w:firstLine="567"/>';
+  ppr+='</w:pPr>';
+  let rpr='<w:rPr><w:rtl/>';
+  if(o.bold)rpr+='<w:b/><w:bCs/>';
+  if(o.color)rpr+='<w:color w:val="'+o.color+'"/>';
+  const sz=o.size||26;rpr+='<w:sz w:val="'+sz+'"/><w:szCs w:val="'+sz+'"/>';
+  rpr+='<w:rFonts w:cs="Sakkal Majalla" w:ascii="Sakkal Majalla" w:hAnsi="Sakkal Majalla"/></w:rPr>';
+  const runs=String(text).split('\n').map((ln,i)=>(i?'<w:br/>':'')+'<w:t xml:space="preserve">'+xmlEsc(ln)+'</w:t>').join('');
+  return '<w:p>'+ppr+'<w:r>'+rpr+runs+'</w:r></w:p>';
+}
+function wHead(text,styleId,pageBreak){
+  let ppr='<w:pPr><w:pStyle w:val="'+styleId+'"/>';if(pageBreak)ppr+='<w:pageBreakBefore/>';ppr+='</w:pPr>';
+  return '<w:p>'+ppr+'<w:r><w:rPr><w:rtl/></w:rPr><w:t xml:space="preserve">'+xmlEsc(text)+'</w:t></w:r></w:p>';
+}
+function wordStyles(){
+  const H=[['Heading1',0,34,'4E4173'],['Heading2',1,30,'78658D'],['Heading3',2,27,'7D8167'],['Heading4',3,25,'B16D4C'],['Heading5',4,24,'8a6a1a'],['Heading6',5,24,'726B62']];
+  let s='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">';
+  s+='<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Sakkal Majalla" w:hAnsi="Sakkal Majalla" w:cs="Sakkal Majalla"/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr></w:rPrDefault></w:docDefaults>';
+  s+='<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:pPr><w:bidi/><w:spacing w:line="360" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr></w:style>';
+  H.forEach(h=>{s+='<w:style w:type="paragraph" w:styleId="'+h[0]+'"><w:name w:val="heading '+(h[1]+1)+'"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr><w:keepNext/><w:bidi/><w:outlineLvl w:val="'+h[1]+'"/><w:spacing w:before="240" w:after="80"/>'+(h[1]===0?'<w:jc w:val="center"/>':'')+'</w:pPr><w:rPr><w:rtl/><w:b/><w:bCs/><w:color w:val="'+h[3]+'"/><w:sz w:val="'+h[2]+'"/><w:szCs w:val="'+h[2]+'"/></w:rPr></w:style>';});
+  return s+'</w:styles>';
+}
+function exportWord(){
+  const title=state.thesisTitle||(byId('root')&&byId('root').title)||'رسالتي العلمية';
+  const HS={'باب':'Heading1','فصل':'Heading2','مبحث':'Heading3','مطلب':'Heading4','مسألة':'Heading5','فرع':'Heading6'};
+  let body='';
+  // title page (direct-formatted, not in TOC)
+  body+='<w:p><w:pPr><w:bidi/><w:jc w:val="center"/><w:spacing w:before="3200" w:after="240"/></w:pPr><w:r><w:rPr><w:rtl/><w:b/><w:bCs/><w:color w:val="4E4173"/><w:sz w:val="56"/><w:szCs w:val="56"/><w:rFonts w:cs="Sakkal Majalla"/></w:rPr><w:t xml:space="preserve">'+xmlEsc(title)+'</w:t></w:r></w:p>';
+  body+=wPar('رسالة علمية',{center:true,size:30,color:'7D8167',before:120});
+  body+=wPar('أُعدّت بمنصّة الباحث · go2top — إلى القمة',{center:true,size:22,color:'78658D',before:2600});
+  // TABLE OF CONTENTS (live field)
+  body+='<w:p><w:pPr><w:bidi/><w:jc w:val="center"/><w:pageBreakBefore/><w:spacing w:after="160"/></w:pPr><w:r><w:rPr><w:rtl/><w:b/><w:bCs/><w:color w:val="4E4173"/><w:sz w:val="40"/><w:szCs w:val="40"/></w:rPr><w:t xml:space="preserve">المحتويات</w:t></w:r></w:p>';
+  body+='<w:p><w:pPr><w:bidi/></w:pPr>'+
+    '<w:r><w:fldChar w:fldCharType="begin"/></w:r>'+
+    '<w:r><w:instrText xml:space="preserve"> TOC \\o "1-4" \\h \\z \\u </w:instrText></w:r>'+
+    '<w:r><w:fldChar w:fldCharType="separate"/></w:r>'+
+    '<w:r><w:rPr><w:rtl/><w:color w:val="726B62"/></w:rPr><w:t xml:space="preserve">لعرض العناوين وأرقام الصفحات: انقر داخل هذا الجدول ثم اختر «تحديث الحقل / Update Field» في Word.</w:t></w:r>'+
+    '<w:r><w:fldChar w:fldCharType="end"/></w:r></w:p>';
+  // headings via styles (picked up by the TOC)
+  function walk(id){
+    children(id).forEach(n=>{
+      body+=wHead(n.title||('('+n.type+')'),HS[n.type]||'Heading6',n.type==='باب');
+      if(n.note&&n.note.trim())body+=wPar(n.note,{size:26,indent:true});
+      walk(n.id);
+    });
+  }
+  if(children('root').length)walk('root');
+  else body+=wPar('لم تُنشئ عناصر في الخريطة الذهنية بعد — أضِف الأبواب والفصول لتظهر هنا كهيكل جاهز.',{size:26});
+  if(state.refs.length){
+    body+=wHead('قائمة المراجع','Heading1',true);
+    state.refs.forEach(r=>body+=wPar(fmtCite(r,r.style),{size:26,after:120}));
+  }
+  const sect='<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/><w:bidi/></w:sectPr>';
+  const documentXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+body+sect+'</w:body></w:document>';
+  const contentTypes='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/></Types>';
+  const rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  const drels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/></Relationships>';
+  const settings='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:updateFields w:val="true"/></w:settings>';
+  const zip=zipStore([
+    {name:'[Content_Types].xml',data:u8(contentTypes)},
+    {name:'_rels/.rels',data:u8(rels)},
+    {name:'word/_rels/document.xml.rels',data:u8(drels)},
+    {name:'word/document.xml',data:u8(documentXml)},
+    {name:'word/styles.xml',data:u8(wordStyles())},
+    {name:'word/settings.xml',data:u8(settings)}
+  ]);
+  const blob=new Blob([zip],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=(title.replace(/[\\/:*?"<>|]/g,'_').slice(0,60)||'الرسالة')+'.docx';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),1500);
+  toast('صُدّر إلى Word مع جدول محتويات 📄');
+}
+
+/* ============ PRINT (branded) ============ */
+function buildPrintDoc(){
+  const title=state.thesisTitle||(byId('root')&&byId('root').title)||'رسالتي العلمية';
+  const total=prog('root');
+  const SZ={'باب':'h2','فصل':'h3','مبحث':'h4','مطلب':'h5','مسألة':'h6','فرع':'h6'};
+  const CO={'باب':'#4E4173','فصل':'#78658D','مبحث':'#7D8167','مطلب':'#B16D4C','مسألة':'#8a6a1a','فرع':'#726B62'};
+  let out='';
+  function walk(id,pref){
+    children(id).forEach((n,i)=>{
+      const p=prog(n.id);const tag=SZ[n.type]||'h6';
+      out+=`<${tag} style="color:${CO[n.type]}"><span style="color:#B16D4C">${pref}${i+1}</span> ${esc(n.title)||'('+n.type+')'} <span style="font-size:11px;color:#726B62;font-weight:normal">— ${p}% · ${esc(n.status)}</span></${tag}>`;
+      if(n.note&&n.note.trim())out+=`<p class="pn">${esc(n.note).replace(/\n/g,'<br>')}</p>`;
+      walk(n.id,pref+(i+1)+'.');
+    });
+  }
+  walk('root','');
+  let refs='';
+  if(state.refs.length)refs=`<h2 style="color:#4E4173">قائمة المراجع</h2>`+state.refs.map((r,i)=>`<p class="pref">${i+1}. ${esc(fmtCite(r,r.style))}</p>`).join('');
+  let tasks='';
+  if(state.tasks.length){
+    const sorted=[...state.tasks].sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
+    tasks=`<h2 style="color:#4E4173">الجدول الزمني للمهام</h2><table class="ptbl"><tr><th>المهمة</th><th>الأولوية</th><th>الاستحقاق</th><th>الحالة</th></tr>`+
+      sorted.map(t=>`<tr><td>${esc(t.title)}</td><td>${esc(t.priority)}</td><td>${esc(t.due||'—')}</td><td>${esc(t.status)}</td></tr>`).join('')+`</table>`;
+  }
+  document.getElementById('printArea').innerHTML=`
+    <div class="pcover">
+      <div class="pmount">▲</div>
+      <div class="ptitle">${esc(title)}</div>
+      <div class="psub">هيكل الرسالة العلمية · نسبة الإنجاز ${total}%</div>
+      <div class="pbrand">go2top — إلى القمة</div>
+    </div>
+    <h1 class="phead">مخطّط البحث التفصيلي</h1>
+    ${children('root').length?out:'<p>لا يوجد هيكل بعد.</p>'}
+    ${tasks}
+    ${refs}`;
+}
+
+/* ============ LIBRARY (IndexedDB) ============ */
+let libDB=null;
+let shelves=(function(){try{return JSON.parse(localStorage.getItem('go2top_shelves'))||['مراجع','صور','مسودات','بيانات'];}catch(e){return['مراجع','صور','مسودات','بيانات'];}})();
+function saveShelves(){try{localStorage.setItem('go2top_shelves',JSON.stringify(shelves));}catch(e){}}
+function idb(){return new Promise((res,rej)=>{if(libDB)return res(libDB);
+  let rq;try{rq=indexedDB.open('go2top_lib',1);}catch(e){return rej(e);}
+  rq.onupgradeneeded=()=>{const db=rq.result;if(!db.objectStoreNames.contains('files'))db.createObjectStore('files',{keyPath:'id'});};
+  rq.onsuccess=()=>{libDB=rq.result;res(libDB);};rq.onerror=()=>rej(rq.error);});}
+function libAll(){return idb().then(db=>new Promise((res,rej)=>{const rq=db.transaction('files','readonly').objectStore('files').getAll();rq.onsuccess=()=>res(rq.result||[]);rq.onerror=()=>rej(rq.error);}));}
+function libPut(rec){return idb().then(db=>new Promise((res,rej)=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').put(rec);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);}));}
+function libGet(id){return idb().then(db=>new Promise((res,rej)=>{const rq=db.transaction('files','readonly').objectStore('files').get(id);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);}));}
+function libDel(id){return idb().then(db=>new Promise((res,rej)=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);}));}
+function fileKind(name,type){name=(name||'').toLowerCase();
+  if((type||'').startsWith('image/')||/\.(png|jpe?g|gif|webp|svg|bmp)$/.test(name))return 'img';
+  if(type==='application/pdf'||/\.pdf$/.test(name))return 'pdf';
+  if(/\.(docx?|txt|rtf|odt)$/.test(name)||(type||'').includes('word'))return 'doc';
+  return 'other';}
+function kindIcon(k){return{img:'🖼️',pdf:'📕',doc:'📄',other:'📎'}[k]||'📎';}
+function fmtSize(b){return b>1048576?(b/1048576).toFixed(1)+'MB':Math.max(1,Math.round(b/1024))+'KB';}
+document.getElementById('libFile').addEventListener('change',e=>{
+  const files=Array.from(e.target.files||[]);e.target.value='';if(!files.length)return;
+  const opts=shelves.map(s=>`<option>${esc(s)}</option>`).join('');
+  openModal(`<h3>إضافة ${files.length} ملف للمكتبة</h3>
+    <div class="field"><label>الرفّ (التصنيف)</label><select id="lfShelf">${opts}</select></div>
+    <div class="field"><label>وسوم (اختياري، بفاصلة)</label><input id="lfTags" placeholder="مثال: الفصل الثاني"></div>
+    <div class="hint">${files.map(f=>esc(f.name)).join('، ')}</div>
+    <div class="modal-acts"><button class="btn pri" id="lfSave">إضافة</button><button class="btn gh" data-act="modal-close">إلغاء</button></div>`);
+  document.getElementById('lfSave').onclick=async()=>{
+    const shelf=document.getElementById('lfShelf').value;
+    const tags=document.getElementById('lfTags').value.split(/[,،]/).map(s=>s.trim()).filter(Boolean);
+    closeModal();toast('جارٍ الحفظ…');
+    try{for(const f of files){await libPut({id:uid(),name:f.name,type:f.type,size:f.size,kind:fileKind(f.name,f.type),shelf,tags,blob:f,added:fmtD(new Date())});}
+      renderLibrary();toast('أُضيفت الملفات للمكتبة ✅');
+    }catch(err){toast('تعذّر الحفظ (قد تكون سعة المتصفح ممتلئة)');}
+  };
+});
+function newShelf(){
+  openModal(`<h3>رفّ جديد</h3><div class="field"><label>اسم التصنيف</label><input id="nsName" placeholder="مثال: أدوات القياس"></div>
+    <div class="modal-acts"><button class="btn pri" id="nsSave">إضافة</button><button class="btn gh" data-act="modal-close">إلغاء</button></div>`);
+  document.getElementById('nsSave').onclick=()=>{const v=document.getElementById('nsName').value.trim();if(v&&shelves.indexOf(v)<0){shelves.push(v);saveShelves();}closeModal();renderLibrary();};
+}
+async function renderLibrary(){
+  const grid=document.getElementById('libGrid');const sel=document.getElementById('libShelf');
+  let files=[];try{files=await libAll();}catch(e){grid.innerHTML='<div class="empty">تعذّر فتح مكتبة المتصفح على هذا الجهاز.</div>';return;}
+  const allShelves=Array.from(new Set(shelves.concat(files.map(f=>f.shelf)).filter(Boolean)));
+  const curShelf=sel.value;
+  sel.innerHTML='<option value="">كل الرفوف</option>'+allShelves.map(s=>`<option ${s===curShelf?'selected':''}>${esc(s)}</option>`).join('');
+  const q=(document.getElementById('libSearch').value||'').trim().toLowerCase();
+  let view=files;
+  if(curShelf)view=view.filter(f=>f.shelf===curShelf);
+  if(q)view=view.filter(f=>(f.name+' '+(f.tags||[]).join(' ')).toLowerCase().includes(q));
+  if(!files.length){grid.innerHTML=`<div class="empty"><div class="em">🗄️</div>المكتبة فارغة — أضف أول ملف أو صورة أو مرجع.</div>`;return;}
+  const groups={};view.forEach(f=>{(groups[f.shelf||'عام']=groups[f.shelf||'عام']||[]).push(f);});
+  let html='';Object.keys(groups).sort().forEach(sh=>{
+    html+=`<div class="shelf"><div class="shelf-title">🗂️ ${esc(sh)} <span class="cnt">(${groups[sh].length})</span></div><div class="books">`+
+      groups[sh].map(f=>{
+        const thumb=f.kind==='img'?`<img class="thumb" src="${URL.createObjectURL(f.blob)}" alt="">`:`<div class="ico">${kindIcon(f.kind)}</div>`;
+        return `<div class="book t-${f.kind}" data-act="lib-open" data-id="${f.id}">
+          <div class="bx" data-act="lib-del" data-id="${f.id}">🗑️</div>
+          ${thumb}
+          <div class="bt">${esc(f.name)}</div>
+          <div class="bm">${fmtSize(f.size||0)}${f.added?' · '+f.added:''}</div>
+          ${(f.tags||[]).map(t=>`<span class="lib-tag">${esc(t)}</span>`).join('')}
+        </div>`;
+      }).join('')+`</div></div>`;
+  });
+  grid.innerHTML=html||`<div class="empty">لا نتائج في هذا الرفّ.</div>`;
+}
+document.getElementById('libSearch').addEventListener('input',renderLibrary);
+document.getElementById('libShelf').addEventListener('change',renderLibrary);
+async function libOpen(id){
+  const f=await libGet(id);if(!f)return;
+  const url=URL.createObjectURL(f.blob);
+  const a=document.createElement('a');a.href=url;
+  if(f.kind==='img'||f.kind==='pdf'){a.target='_blank';a.rel='noopener';}
+  else{a.download=f.name;}
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+function libDelete(id){
+  openModal(`<h3>حذف الملف من المكتبة؟</h3><p style="color:var(--muted);font-size:14px">لا يمكن التراجع.</p>
+    <div class="modal-acts"><button class="btn terra" id="ldYes">حذف</button><button class="btn gh" data-act="modal-close">إلغاء</button></div>`);
+  document.getElementById('ldYes').onclick=async()=>{await libDel(id);closeModal();renderLibrary();toast('حُذف');};
+}
+
+/* ============ CALENDAR EXPORT (ICS + Google) ============ */
+function addDayStr(s,n){const d=parseD(s);d.setDate(d.getDate()+n);return fmtD(d);}
+function icsEsc(s){return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,'0');return d.getUTCFullYear()+p(d.getUTCMonth()+1)+p(d.getUTCDate())+'T'+p(d.getUTCHours())+p(d.getUTCMinutes())+p(d.getUTCSeconds())+'Z';}
+function exportICS(){
+  const withDue=state.tasks.filter(t=>t.due);
+  if(!withDue.length){toast('لا مهام بمواعيد — أضف تواريخ استحقاق أولًا');return;}
+  const stamp=nowStamp();
+  let ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//go2top//baheth//AR','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+  withDue.forEach(t=>{
+    const d=t.due.replace(/-/g,'');const end=addDayStr(t.due,1).replace(/-/g,'');
+    ics.push('BEGIN:VEVENT','UID:'+t.id+'@go2top','DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+d,'DTEND;VALUE=DATE:'+end,
+      'SUMMARY:'+icsEsc('📚 '+t.title),'DESCRIPTION:'+icsEsc('مهمة رسالة · أولوية '+t.priority+' · '+(t.status||'')),
+      'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc('تذكير: '+t.title),'TRIGGER:-P1D','END:VALARM','END:VEVENT');
+  });
+  ics.push('END:VCALENDAR');
+  const blob=new Blob([ics.join('\r\n')],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='مهام_البحث.ics';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),1500);
+  toast('حُمّل ملف التقويم — افتحيه لإضافة المهام بتنبيهات 📆');
+}
+function taskGCal(id){
+  const t=state.tasks.find(x=>x.id===id);if(!t||!t.due)return;
+  const d=t.due.replace(/-/g,'');const end=addDayStr(t.due,1).replace(/-/g,'');
+  const url='https://calendar.google.com/calendar/render?action=TEMPLATE'+
+    '&text='+encodeURIComponent('📚 '+t.title)+
+    '&dates='+d+'/'+end+
+    '&details='+encodeURIComponent('مهمة رسالة · أولوية '+t.priority+' · go2top');
+  const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+/* ============ ADVANCED STATS ============ */
+function gammln(x){const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];let y=x,tmp=x+5.5;tmp-=(x+0.5)*Math.log(tmp);let ser=1.000000000190015;for(let j=0;j<6;j++){y++;ser+=c[j]/y;}return -tmp+Math.log(2.5066282746310005*ser/x);}
+function betacf(a,b,x){const MAXIT=200,EPS=3e-12,FPMIN=1e-300;let qab=a+b,qap=a+1,qam=a-1,c=1,d=1-qab*x/qap;if(Math.abs(d)<FPMIN)d=FPMIN;d=1/d;let h=d;for(let m=1;m<=MAXIT;m++){let m2=2*m,aa=m*(b-m)*x/((qam+m2)*(a+m2));d=1+aa*d;if(Math.abs(d)<FPMIN)d=FPMIN;c=1+aa/c;if(Math.abs(c)<FPMIN)c=FPMIN;d=1/d;h*=d*c;aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));d=1+aa*d;if(Math.abs(d)<FPMIN)d=FPMIN;c=1+aa/c;if(Math.abs(c)<FPMIN)c=FPMIN;d=1/d;let del=d*c;h*=del;if(Math.abs(del-1)<EPS)break;}return h;}
+function betai(a,b,x){if(x<=0)return 0;if(x>=1)return 1;const bt=Math.exp(gammln(a+b)-gammln(a)-gammln(b)+a*Math.log(x)+b*Math.log(1-x));return x<(a+1)/(a+b+2)?bt*betacf(a,b,x)/a:1-bt*betacf(b,a,1-x)/b;}
+function gammq(a,x){if(x<=0)return 1;if(x<a+1){let sum=1/a,del=sum,ap=a;for(let n=0;n<200;n++){ap++;del*=x/ap;sum+=del;if(Math.abs(del)<Math.abs(sum)*3e-12)break;}return 1-sum*Math.exp(-x+a*Math.log(x)-gammln(a));}else{let b=x+1-a,c=1e300,d=1/b,h=d;for(let i=1;i<=200;i++){let an=-i*(i-a);b+=2;d=an*d+b;if(Math.abs(d)<1e-300)d=1e-300;c=b+an/c;if(Math.abs(c)<1e-300)c=1e-300;d=1/d;let del=d*c;h*=del;if(Math.abs(del-1)<3e-12)break;}return Math.exp(-x+a*Math.log(x)-gammln(a))*h;}}
+function tP(t,df){return betai(df/2,0.5,df/(df+t*t));} // two-tailed p
+function meanVar(a){const n=a.length,m=a.reduce((p,c)=>p+c,0)/n;const v=a.reduce((p,c)=>p+(c-m)**2,0)/(n-1);return{n,m,v};}
+function sig(p){return p<0.001?'دالة جدًا (p<0.001)':p<0.01?'دالة عند 0.01':p<0.05?'دالة عند 0.05':'غير دالة (p≥0.05)';}
+function statCells(arr){return `<div class="result-box"><div class="stat-grid">${arr.map(c=>`<div class="stat-cell"><div class="n">${c[1]}</div><div class="l">${c[0]}</div></div>`).join('')}</div>${arr._note||''}</div>`;}
+function calcTtest(){
+  const A=parseNums(document.getElementById('ttA').value),B=parseNums(document.getElementById('ttB').value);
+  const out=document.getElementById('ttestOut');
+  if(A.length<2||B.length<2){out.innerHTML='<div class="result-box">أدخل قيمتين على الأقل في كل مجموعة.</div>';return;}
+  const a=meanVar(A),b=meanVar(B);
+  const sp=Math.sqrt(((a.n-1)*a.v+(b.n-1)*b.v)/(a.n+b.n-2));
+  const t=(a.m-b.m)/(sp*Math.sqrt(1/a.n+1/b.n));const df=a.n+b.n-2;const p=tP(t,df);
+  const rnd=x=>Math.round(x*1000)/1000;
+  const cells=[['متوسط 1',rnd(a.m)],['متوسط 2',rnd(b.m)],['قيمة t',rnd(t)],['درجات الحرية',df],['قيمة p',rnd(p)]];
+  cells._note=`<div class="hint" style="margin:12px 0 0">النتيجة: <b>${sig(p)}</b> — الفرق بين المتوسطين ${p<0.05?'ذو دلالة إحصائية':'ليس ذا دلالة إحصائية'}.</div>`;
+  out.innerHTML=statCells(cells);
+}
+function calcCorr(){
+  const X=parseNums(document.getElementById('corrX').value),Y=parseNums(document.getElementById('corrY').value);
+  const out=document.getElementById('corrOut');
+  const n=Math.min(X.length,Y.length);
+  if(n<3){out.innerHTML='<div class="result-box">أدخل 3 أزواج على الأقل بنفس العدد.</div>';return;}
+  const x=X.slice(0,n),y=Y.slice(0,n);const mx=x.reduce((p,c)=>p+c,0)/n,my=y.reduce((p,c)=>p+c,0)/n;
+  let sxy=0,sxx=0,syy=0;for(let i=0;i<n;i++){sxy+=(x[i]-mx)*(y[i]-my);sxx+=(x[i]-mx)**2;syy+=(y[i]-my)**2;}
+  const r=sxy/Math.sqrt(sxx*syy);const df=n-2;const t=r*Math.sqrt(df/(1-r*r));const p=tP(t,df);
+  const strength=Math.abs(r)>=0.7?'قوي':Math.abs(r)>=0.4?'متوسط':Math.abs(r)>=0.2?'ضعيف':'ضعيف جدًا';
+  const dir=r>0?'طردي':'عكسي';const rnd=x=>Math.round(x*1000)/1000;
+  const cells=[['معامل r',rnd(r)],['الاتجاه',dir],['القوة',strength],['R²',rnd(r*r)],['قيمة p',rnd(p)]];
+  cells._note=`<div class="hint" style="margin:12px 0 0">ارتباط <b>${dir} ${strength}</b> — ${sig(p)}.</div>`;
+  out.innerHTML=statCells(cells);
+}
+function calcChi(){
+  const rows=document.getElementById('chiData').value.trim().split(/\n+/).map(r=>parseNums(r)).filter(r=>r.length);
+  const out=document.getElementById('chiOut');
+  if(rows.length<2||!rows.every(r=>r.length===rows[0].length)||rows[0].length<2){out.innerHTML='<div class="result-box">أدخل جدولًا صحيحًا: سطرين على الأقل بعدد أعمدة متساوٍ (≥2).</div>';return;}
+  const R=rows.length,C=rows[0].length;const rt=rows.map(r=>r.reduce((p,c)=>p+c,0));
+  const ct=[];for(let j=0;j<C;j++)ct[j]=rows.reduce((p,r)=>p+r[j],0);
+  const tot=rt.reduce((p,c)=>p+c,0);let chi=0;
+  for(let i=0;i<R;i++)for(let j=0;j<C;j++){const e=rt[i]*ct[j]/tot;if(e>0)chi+=(rows[i][j]-e)**2/e;}
+  const df=(R-1)*(C-1);const p=gammq(df/2,chi/2);const rnd=x=>Math.round(x*1000)/1000;
+  const cells=[['مربع كاي',rnd(chi)],['درجات الحرية',df],['المجموع',tot],['قيمة p',rnd(p)]];
+  cells._note=`<div class="hint" style="margin:12px 0 0">النتيجة: <b>${sig(p)}</b> — ${p<0.05?'توجد علاقة/ارتباط بين المتغيّرين':'لا توجد علاقة دالة بين المتغيّرين'}.</div>`;
+  out.innerHTML=statCells(cells);
+}
+
+/* ============ SUPERVISOR LOG ============ */
+function renderSupervisor(){
+  const box=document.getElementById('supList');
+  if(!state.supervisor.length){box.innerHTML=`<div class="empty"><div class="em">🧑‍🏫</div>لا لقاءات بعد — وثّق أول متابعة مع مشرفك.</div>`;return;}
+  const sorted=[...state.supervisor].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  box.innerHTML=sorted.map(s=>`<div class="sup-card">
+    <h4><span>${esc(s.date||'بلا تاريخ')} · ${esc(s.type||'')}</span>
+      <span class="node-acts">
+        ${s.todo?`<button class="iconbtn" data-act="sup-totask" data-id="${s.id}" title="حوّل إلى مهمة">➕📋</button>`:''}
+        <button class="iconbtn" data-act="sup-edit" data-id="${s.id}" title="تعديل">✏️</button>
+        <button class="iconbtn" data-act="sup-del" data-id="${s.id}" title="حذف">🗑️</button>
+      </span></h4>
+    ${s.agenda?`<div class="sl"><b>الأجندة:</b> ${esc(s.agenda)}</div>`:''}
+    ${s.notes?`<div class="sl"><b>الملاحظات:</b> ${esc(s.notes)}</div>`:''}
+    ${s.decisions?`<div class="sl"><b>القرارات:</b> ${esc(s.decisions)}</div>`:''}
+    ${s.todo?`<div class="sl"><b>مطلوب مني:</b> ${esc(s.todo)}</div>`:''}
+    ${s.next?`<div class="sl"><b>الموعد القادم:</b> ${esc(s.next)}</div>`:''}
+  </div>`).join('');
+}
+function editSup(id){
+  const s=id?state.supervisor.find(x=>x.id===id):{id:null,date:fmtD(new Date()),type:'حضوري',agenda:'',notes:'',decisions:'',todo:'',next:''};
+  openModal(`<h3>${id?'تعديل لقاء':'لقاء / متابعة جديدة'}</h3>
+    <div class="frow">
+      <div class="field"><label>التاريخ</label><input id="spDate" type="date" value="${s.date||''}"></div>
+      <div class="field"><label>نوع اللقاء</label><select id="spType">${['حضوري','عن بُعد','مراسلة'].map(t=>`<option ${t===s.type?'selected':''}>${t}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>أجندة النقاش</label><textarea id="spAgenda">${esc(s.agenda)}</textarea></div>
+    <div class="field"><label>أبرز الملاحظات</label><textarea id="spNotes">${esc(s.notes)}</textarea></div>
+    <div class="field"><label>القرارات</label><textarea id="spDec">${esc(s.decisions)}</textarea></div>
+    <div class="frow">
+      <div class="field"><label>مطلوب مني (مهمة)</label><input id="spTodo" value="${esc(s.todo)}"></div>
+      <div class="field"><label>الموعد القادم</label><input id="spNext" type="date" value="${s.next||''}"></div>
+    </div>
+    <div class="modal-acts"><button class="btn pri" id="spSave">حفظ</button>${id?'<button class="btn terra" id="spDel">حذف</button>':''}<button class="btn gh" data-act="modal-close">إلغاء</button></div>`);
+  document.getElementById('spSave').onclick=()=>{
+    const o={date:document.getElementById('spDate').value,type:document.getElementById('spType').value,agenda:document.getElementById('spAgenda').value,notes:document.getElementById('spNotes').value,decisions:document.getElementById('spDec').value,todo:document.getElementById('spTodo').value,next:document.getElementById('spNext').value};
+    if(id)Object.assign(s,o);else state.supervisor.unshift({id:uid(),...o});
+    save();closeModal();renderSupervisor();toast('حُفظ اللقاء ✅');
+  };
+  if(id)document.getElementById('spDel').onclick=()=>{state.supervisor=state.supervisor.filter(x=>x.id!==id);save();closeModal();renderSupervisor();toast('حُذف');};
+}
+function delSup(id){state.supervisor=state.supervisor.filter(x=>x.id!==id);save();renderSupervisor();toast('حُذف');}
+function supToTask(id){const s=state.supervisor.find(x=>x.id===id);if(!s||!s.todo)return;
+  state.tasks.push({id:uid(),title:s.todo,start:s.date||'',due:s.next||'',priority:'عالية',status:'لم يبدأ',nodeId:''});
+  save();toast('أُضيفت كمهمة في الجدول ✅');
+}
+
+/* ============ WRITING WORKSHOP ============ */
+const PHRASES={
+ 'الاستهلال والربط':['تشير الدراسات إلى أنّ…','في ضوء ما سبق…','تأسيسًا على ما تقدّم…','ومن الجدير بالذكر أنّ…','وتجدر الإشارة إلى…'],
+ 'العرض والتحليل':['يمكن تفسير هذه النتيجة بـ…','ويتّضح من الجدول أعلاه…','وبتحليل البيانات يتبيّن…','ويعزو الباحث ذلك إلى…'],
+ 'المقارنة والاختلاف':['وعلى النقيض من ذلك…','وتتّفق هذه النتيجة مع دراسة (…)…','وتختلف هذه النتيجة عن…','وبالمقارنة مع الدراسات السابقة…'],
+ 'الخلاصة والتوصية':['ومما سبق يتّضح أنّ…','وخلاصة القول…','ويوصي الباحث بـ…','وبناءً على ما توصّلت إليه الدراسة…']
+};
+function renderWriting(){
+  const w=state.writing;const today=fmtD(new Date());
+  const todayWords=(w.log.find(x=>x.date===today)||{}).words||0;
+  const pct=w.goal?Math.min(100,Math.round(todayWords/w.goal*100)):0;
+  // streak
+  let streak=0;let d=new Date();
+  for(;;){const ds=fmtD(d);const e=w.log.find(x=>x.date===ds);if(e&&e.words>=w.goal){streak++;d.setDate(d.getDate()-1);}else{if(ds===today){d.setDate(d.getDate()-1);continue;}break;}}
+  const totalWords=w.log.reduce((p,c)=>p+c.words,0);
+  document.getElementById('wGoalBox').innerHTML=`
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <div style="text-align:center"><div class="streak-num">🔥 ${streak}</div><div style="font-size:12px;color:var(--muted)">يوم متتالٍ</div></div>
+      <div style="flex:1;min-width:150px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>اليوم: ${todayWords} / ${w.goal} كلمة</span><span style="color:var(--sage-d)">${pct}%</span></div>
+        <div class="pbar" style="margin-top:5px"><span style="width:${pct}%"></span></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">الإجمالي التراكمي: ${totalWords} كلمة</div>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>سجّل كلمات كتبتها اليوم</label><input id="wWordsInput" type="number" min="0" placeholder="مثال: 350"></div>
+      <div class="field"><label>هدفك اليومي</label><input id="wGoalInput" type="number" min="1" value="${w.goal}"></div>
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn pri sm" data-act="w-logwords">➕ أضِف للسجل</button><button class="btn gh sm" data-act="w-setgoal">تحديث الهدف</button></div>`;
+  document.getElementById('phraseBox').innerHTML=Object.keys(PHRASES).map(cat=>
+    `<div class="phrase-cat">${cat}</div>`+PHRASES[cat].map(p=>`<span class="phrase" data-act="phrase-copy" data-t="${esc(p)}">${esc(p)}</span>`).join('')
+  ).join('')+`<div class="hint" style="margin-top:12px">اضغطي أي عبارة لنسخها.</div>`;
+}
+function logWords(){const v=+document.getElementById('wWordsInput').value;if(!(v>0)){toast('أدخل عدد كلمات');return;}
+  const today=fmtD(new Date());let e=state.writing.log.find(x=>x.date===today);if(e)e.words+=v;else state.writing.log.push({date:today,words:v});
+  save();renderWriting();renderDash();toast('سُجّلت '+v+' كلمة ✅');
+}
+function setWGoal(){const v=+document.getElementById('wGoalInput').value;if(v>0){state.writing.goal=v;save();renderWriting();toast('حُدّث الهدف');}}
+function copyPhrase(el){copyText(el.dataset.t,'نُسخت العبارة ✅');}
+
+/* ============ AI ASSISTANT (Claude) — per-user account ============ */
+function getAiKey(){try{return localStorage.getItem('go2top_aikey')||'';}catch(e){return'';}}
+function getAiName(){try{return localStorage.getItem('go2top_ainame')||'';}catch(e){return'';}}
+function renderAI(){
+  const key=getAiKey(),name=getAiName();
+  document.getElementById('aiKey').value=key;
+  document.getElementById('aiName').value=name;
+  document.getElementById('aiModel').value=state.ai.model||'claude-3-5-haiku-latest';
+  const chip=document.getElementById('aiStatusChip');
+  if(key){chip.textContent='✅ مسجّل الدخول'+(name?': '+name:'');chip.style.background='var(--sage-tint)';chip.style.color='var(--sage-d)';}
+  else{chip.textContent='غير مسجّل الدخول';chip.style.background='';chip.style.color='';}
+  document.getElementById('aiLogoutBtn').style.display=key?'inline-flex':'none';
+  document.getElementById('aiChat').style.display=key?'block':'none';
+  const ctx=document.getElementById('aiCtx');if(ctx)ctx.checked=!!(state.ai&&state.ai.context);
+  const wel=document.getElementById('aiWelcome');if(wel)wel.textContent=name?('أهلًا '+name+' 👋'):'أهلًا بك 👋';
+}
+function saveAiKey(){
+  const k=document.getElementById('aiKey').value.trim();
+  const name=document.getElementById('aiName').value.trim();
+  if(k&&!/^sk-ant-/.test(k)){toast('المفتاح يجب أن يبدأ بـ sk-ant-');return;}
+  state.ai.model=document.getElementById('aiModel').value;save();
+  try{if(k)localStorage.setItem('go2top_aikey',k);else localStorage.removeItem('go2top_aikey');
+    if(name)localStorage.setItem('go2top_ainame',name);else localStorage.removeItem('go2top_ainame');}catch(e){}
+  renderAI();toast(k?'تم تسجيل دخولك ✅':'احفظ مفتاحك للدخول');
+}
+function aiLogout(){
+  openModal(`<h3>تسجيل الخروج؟</h3><p style="color:var(--muted);font-size:14px">سيُحذف مفتاحك واسمك من هذا الجهاز. لن يتأثر بحثك.</p>
+    <div class="modal-acts"><button class="btn terra" id="aoYes">خروج</button><button class="btn gh" data-act="modal-close">إلغاء</button></div>`);
+  document.getElementById('aoYes').onclick=()=>{try{localStorage.removeItem('go2top_aikey');localStorage.removeItem('go2top_ainame');}catch(e){}closeModal();renderAI();toast('تم تسجيل الخروج');};
+}
+function aiHelp(){const h=document.getElementById('aiHelp');h.style.display=h.style.display==='none'?'block':'none';}
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='aiCtx'){state.ai.context=e.target.checked;save();}});
+function buildAiContext(){
+  const title=(byId('root')&&byId('root').title)||state.thesisTitle||'';
+  let out='[سياق رسالة الباحث]\nالعنوان: '+(title||'—')+'\n\nالهيكل:\n';
+  function walk(id,d){children(id).forEach(n=>{out+='  '.repeat(d)+'- ['+n.type+'] '+(n.title||'')+' ('+prog(n.id)+'%)\n';walk(n.id,d+1);});}
+  walk('root',0);
+  if(state.refs.length){out+='\nأبرز المراجع:\n';state.refs.slice(0,12).forEach(r=>{out+='  - '+[r.author,r.year,r.title].filter(Boolean).join('، ')+'\n';});}
+  return out.slice(0,4000);
+}
+function aiPreset(p){
+  const map={
+    critique:'انقد سؤال البحث التالي نقدًا علميًا، واذكر نقاط قوته وضعفه واقترح صياغة أدق:\n\n'+((byId('root')&&byId('root').title)||''),
+    summarize:'لخّص النص التالي في نقاط واضحة مع إبراز الفكرة الرئيسية:\n\n',
+    gap:'حلّل فجوة الأدبيات بناءً على المراجع والملخصات المتاحة، وبيّن ما لم يُعالَج بعد.',
+    rephrase:'حسّن صياغة الفقرة الأكاديمية التالية مع الحفاظ على المعنى ورفع مستواها اللغوي:\n\n',
+    outline:'اقترح هيكلًا تفصيليًا (مباحث ومطالب) لفصل بحثي عن الموضوع التالي:\n\n',
+    next:'بناءً على سياق رسالتي وتقدّمها الحالي، ما أهم ثلاث خطوات ينبغي أن أركّز عليها الآن؟ رتّبها حسب الأولوية.'
+  };
+  const t=document.getElementById('aiInput');t.value=map[p]||'';
+  if(p==='gap'||p==='next'){const c=document.getElementById('aiCtx');if(c&&!c.checked){c.checked=true;state.ai.context=true;save();}}
+  t.focus();
+}
+async function aiRun(content,sys){
+  const key=getAiKey();if(!key){toast('سجّل دخولك بمفتاحك أولًا');return;}
+  const st=document.getElementById('aiStatus'),out=document.getElementById('aiOut');
+  st.textContent='… Claude يفكّر';out.innerHTML='<div class="ai-typing">جارٍ التوليد…</div>';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:state.ai.model||'claude-3-5-haiku-latest',max_tokens:1500,system:sys,messages:[{role:'user',content:content}]})});
+    const data=await res.json();
+    if(!res.ok){const msg=(data.error&&data.error.message)||('رمز '+res.status);
+      out.innerHTML=`<div class="ai-msg err">تعذّر الاتصال: ${esc(msg)}${res.status===401?' — تحقّق من صحة مفتاحك.':res.status===400&&/credit|balance/i.test(msg)?' — يلزم شحن رصيد في حسابك.':''}</div>`;st.textContent='';return;}
+    const text=(data.content&&data.content.map(c=>c.text).join('\n'))||'(لا رد)';
+    out.innerHTML=`<div class="ai-msg">${esc(text)}</div><button class="btn gh sm" style="margin-top:8px" data-act="ai-copyout" data-t="${esc(text)}">📋 نسخ</button>`;
+    st.textContent='';
+  }catch(err){out.innerHTML=`<div class="ai-msg err">تعذّر الاتصال بالخدمة. تأكّد من صحة المفتاح والاتصال بالإنترنت.</div>`;st.textContent='';}
+}
+function aiSend(){
+  const input=document.getElementById('aiInput').value.trim();if(!input){toast('اكتب سؤالك');return;}
+  const useCtx=document.getElementById('aiCtx')&&document.getElementById('aiCtx').checked;
+  let sys='أنت مساعد بحثي أكاديمي عربي خبير. أجب بالعربية الفصحى بإيجاز ووضوح ودقة علمية، وبأسلوب أكاديمي رصين. لا تختلق مراجع.';
+  if(useCtx)sys+='\n\nاستعن بسياق رسالة الباحث التالي عند الإجابة:\n'+buildAiContext();
+  aiRun(input,sys);
+}
+function aiCite(){
+  if(!getAiKey()){toast('سجّل دخولك بمفتاحك أولًا');return;}
+  const para=document.getElementById('aiInput').value.trim();
+  if(!para){toast('ألصق الفقرة في الصندوق ثم اضغط «اقترح استشهادًا»');return;}
+  if(!state.refs.length){toast('مكتبة المراجع فارغة — أضِف مراجع أولًا');return;}
+  const lib=state.refs.slice(0,30).map((r,i)=>{
+    let s=(i+1)+'. '+fmtCite(r,r.style);
+    const m=r.matrix||{};const extra=[m.aim,m.findings].filter(Boolean).join(' — ');
+    if(extra)s+=' « '+extra.slice(0,140)+' »';
+    return s;
+  }).join('\n');
+  const content='لديّ فقرة أكتبها، وأريد استشهادًا مناسبًا من مكتبة مراجعي أنا فقط.\n\n[الفقرة]:\n'+para+'\n\n[مكتبة مراجعي]:\n'+lib+
+    '\n\nالمطلوب:\n1) اختر أنسب مرجع أو مرجعين من القائمة أعلاه يدعمان الفقرة.\n2) اكتب جملة استشهاد عربية جاهزة للدمج داخل الفقرة (تتضمّن الإحالة، مثل: «ويؤكّد ذلك ما توصّل إليه فلان (سنة) من أنّ…»).\n3) اذكر المرجع الكامل كما ورد.\nإن لم يكن أي مرجع مناسبًا فقل ذلك صراحةً ولا تختلق مصدرًا.';
+  aiRun(content,'أنت مساعد توثيق أكاديمي دقيق. لا تستشهد إلا بالمراجع المعطاة في القائمة، ولا تختلق أي مصدر غير موجود فيها.');
+}
+
+/* ============ NODE PICKERS ============ */
+function refreshNodePickers(){
+  const opts='<option value="">— عام —</option>'+state.nodes.filter(n=>n.id!=='root').map(n=>`<option value="${n.id}">${'· '.repeat(0)}${esc(n.type)}: ${esc(n.title)||'(بلا عنوان)'}</option>`).join('');
+  const keep=cfgNode.value;cfgNode.innerHTML=opts;cfgNode.value=keep;
+  const rn=document.getElementById('rfNode');const keep2=rn.value;rn.innerHTML='<option value="">— غير مرتبط —</option>'+state.nodes.filter(n=>n.id!=='root').map(n=>`<option value="${n.id}">${esc(n.type)}: ${esc(n.title)||'(بلا عنوان)'}</option>`).join('');rn.value=keep2;
+}
+
+/* ============ EXPORT / IMPORT ============ */
+function doExport(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='بحثي_go2top_'+todayStr()+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('نُزّلت النسخة الاحتياطية ⬇️');
+}
+document.getElementById('fileInput').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{try{const s=JSON.parse(rd.result);if(!s.nodes)throw 0;state=s;save();initUI();renderAll();toast('استُوردت البيانات ✅');}catch(err){toast('ملف غير صالح');}};
+  rd.readAsText(f);e.target.value='';
+});
+
+/* ============ TITLE ============ */
+const tt=document.getElementById('thesisTitle');
+tt.addEventListener('input',()=>{state.thesisTitle=tt.value;const root=byId('root');if(root)root.title=tt.value||'رسالتي العلمية';saveSoon();});
+
+/* ============ INIT ============ */
+function initUI(){
+  tt.value=state.thesisTitle||'';
+  cfgWork.value=state.timer.work;cfgShort.value=state.timer.short;cfgLong.value=state.timer.long;
+  timer.mode='work';timer.remain=timer.total=state.timer.work*60;
+  refreshNodePickers();
+}
+function renderAll(){renderDash();renderTree();renderTimer();renderRefs();renderTasks();renderSupervisor();renderWriting();}
+initUI();renderAll();
+window.addEventListener('beforeunload',save);
+})();
+</script>
+</body>
+</html>
